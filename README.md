@@ -5,7 +5,7 @@
 [Watch Full Tutorial on Youtube](https://youtu.be/4sbklcQ0EXc)
 
 About This Course:
-
+-
 -   🎸 Listen to music, play next and previous songs
 -   🔈 Update the volume with a slider
 -   🎧 Admin dashboard to create albums and songs
