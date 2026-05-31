@@ -1,5 +1,5 @@
 import { CognitoJwtVerifier } from "aws-jwt-verify";
-
+console.log("test", process.env.COGNITO_USER_POOL_ID)
 const verifier = CognitoJwtVerifier.create({
 	userPoolId: process.env.COGNITO_USER_POOL_ID,
 	clientId: process.env.COGNITO_CLIENT_ID,

@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-// import { clerkMiddleware } from "@clerk/express";
+import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import path from "path";
 import cors from "cors";
@@ -35,7 +35,7 @@ app.use(
 );
 
 app.use(express.json()); // to parse req.body
-// app.use(clerkMiddleware()); // this will add auth to req obj => req.auth => this middleware adds auth object which contains multiple fields, especially userId, inside every request object it is attached to.
+app.use(cookieParser());
 app.use(
 	fileUpload({
 		useTempFiles: true,

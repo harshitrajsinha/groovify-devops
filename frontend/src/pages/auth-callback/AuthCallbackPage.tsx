@@ -18,9 +18,6 @@ const AuthCallbackPage = () => {
         window.location.search
       ).get("code");
 
-	  console.log("OAuth callback URL:", window.location.href);
-console.log("Authorization code:", code);
-
       if (!code) {
         console.error("No authorization code found");
         navigate("/login");
@@ -28,18 +25,9 @@ console.log("Authorization code:", code);
       }
 
       try {
-        // await axiosInstance.post("/auth/callback", {
-        //   code,
-        // });
-		const response = await axiosInstance.post(
-  "/auth/callback",
-  { code }
-);
-
-console.log(
-  "Backend auth callback response:",
-  response.data
-);
+        await axiosInstance.post("/auth/callback", {
+          code,
+        });
 
         navigate("/");
       } catch (error) {

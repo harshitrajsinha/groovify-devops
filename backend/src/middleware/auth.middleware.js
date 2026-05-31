@@ -1,22 +1,57 @@
-import { clerkClient } from "@clerk/express";
+import "dotenv/config";
+import { CognitoJwtVerifier } from "aws-jwt-verify";
+const verifier =
+	CognitoJwtVerifier.create({
+		userPoolId: process.env.COGNITO_USER_POOL_ID,
+		tokenUse: "id",
+		clientId: process.env.COGNITO_CLIENT_ID,
+	});
 
-// it checks if userId value is present in request or not
 export const protectRoute = async (req, res, next) => {
-	if (!req.auth.userId) {
-		return res.status(401).json({ message: "Unauthorized - you must be logged in" });
+	try {
+		const token =
+			req.cookies.auth_token;
+
+		if (!token) {
+			return res.status(401).json({
+				message:
+					"Unauthorized - Login required",
+			});
+		}
+
+		const payload =
+			await verifier.verify(token);
+
+		req.user = payload;
+
+		next();
+	} catch (error) {
+		console.log(
+			"JWT verification failed:",
+			error
+		);
+
+		return res.status(401).json({
+			message:
+				"Unauthorized - Invalid token",
+		});
 	}
-	next();
 };
 
-// checks if the logged-in-with email id is equal to admin email id set in .env
-// This function would be used in an api authentication that requires admin to perform task
-export const requireAdmin = async (req, res, next) => {
+export const requireAdmin = async (
+	req,
+	res,
+	next
+) => {
 	try {
-		const currentUser = await clerkClient.users.getUser(req.auth.userId);
-		const isAdmin = process.env.ADMIN_EMAIL === currentUser.primaryEmailAddress?.emailAddress;
-
-		if (!isAdmin) {
-			return res.status(403).json({ message: "Unauthorized - you must be an admin" });
+		if (
+			req.user.email !==
+			process.env.ADMIN_EMAIL
+		) {
+			return res.status(403).json({
+				message:
+					"Unauthorized - Admin only",
+			});
 		}
 
 		next();
