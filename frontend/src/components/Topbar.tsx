@@ -12,7 +12,6 @@ const Topbar = () => {
 	if (isLoading) {
 		return null; // or spinner
 	}
-
 	return (
 		<div
 			className='flex items-center justify-between p-4 sticky top-0 bg-zinc-900/75 
@@ -32,14 +31,14 @@ const Topbar = () => {
 				)}
 
 				{/* <SignedOut> */}
-					{!isLoading && !isAuthenticated && (
-						
-						<SignInOAuthButtons />
-					)}
+				{!isLoading && !isAuthenticated && (
 
-					{!isLoading && isAuthenticated && (
-						<SignOutButton />
-					)}
+					<SignInOAuthButtons />
+				)}
+
+				{!isLoading && isAuthenticated && (
+					<SignOutButton />
+				)}
 				{/* </SignedOut> */}
 
 				{/* <UserButton /> */}
