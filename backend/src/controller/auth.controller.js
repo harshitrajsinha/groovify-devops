@@ -24,6 +24,11 @@ export const authCallback = async (req, res, next) => {
 			process.env.COGNITO_CLIENT_ID
 		);
 
+		params.append(
+			"client_secret",
+			process.env.COGNITO_CLIENT_SECRET
+		);
+
 		params.append("code", code);
 
 		params.append(
