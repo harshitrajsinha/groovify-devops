@@ -36,4 +36,4 @@ VITE_COGNITO_CLIENT_ID=
 ```
 
 ## AWS-native architecture
-![Architecture](/assets/spotify-clone-devops-architecture.png)
+![Architecture](/assets/spotify-clone-devops-arc.png)
