@@ -44,4 +44,4 @@ VITE_COGNITO_CLIENT_ID=
 * On code level - majority of the authentication workload, in case of Clerk, that was handled by frontend is now shifted onto backend where frontend verifies the user and shares a code with backend, which then generate authentication cookie and save it on client's browser.
 <br/>
 
-![Aws-Cognito-flow](/assets/aws-cognito-flow.png)
+![Aws-Cognito-flow](/assets/cognito-flow.png)
