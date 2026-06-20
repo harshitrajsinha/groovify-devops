@@ -2,7 +2,8 @@ This project is forked from [burakorkmez/realtime-spotify-clone](https://github.
 
 <br>
 
-![Demo App](/frontend/public/screenshot-for-readme.png)
+
+<img src="/frontend/public/screenshot-for-readme.png" alt="Demo App" width="1000" height="400" />
 <h2 align="center">Realtime Spotify Application ✨</h2><br>
 
 ### Setup .env file in _backend_ folder
@@ -41,3 +42,6 @@ VITE_COGNITO_CLIENT_ID=
 ## Migration from Clerk to AWS Cognito
 * Integrated Google OAuth in AWS Cognito (same as it was available previously through Clerk), hence there is no change on User facing interface.
 * On code level - majority of the authentication workload, in case of Clerk, that was handled by frontend is now shifted onto backend where frontend verifies the user and shares a code with backend, which then generate authentication cookie and save it on client's browser.
+<br/>
+
+![Aws-Cognito-flow](/assets/aws-cognito-flow.png)
