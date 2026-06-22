@@ -34,7 +34,7 @@ resource "aws_cognito_user_pool_domain" "spotify_cognito_user_pool_domain" {
 }
 
 output "cognito_domain_cloudfront_distribution"{
-  value = aws_cognito_user_pool_domain.spotify_cognito_user_pool_domain.cloudfront_distribution # To be added to Domain provider as CNAME
+  value = var.is_certificate_issued ? aws_cognito_user_pool_domain.spotify_cognito_user_pool_domain[0].cloudfront_distribution: null # To be added to Domain provider as CNAME
 }
 
 # ---------------------------------------------------
