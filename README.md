@@ -23,7 +23,6 @@ This project is forked from [burakorkmez/realtime-spotify-clone](https://github.
                                             │                     │
                                          Frontend              Backend
 
-<<<<<<< HEAD
 ```
 
 ## 📋 <a name="table">Table of Contents</a>
@@ -80,61 +79,6 @@ COGNITO_USER_POOL_ID=
 
 ```env
 VITE_BACKEND_URL=http://localhost # (Traefik reverse proxy endpoint)
-=======
-
-## <a name="quick-start">Quick Start</a>
-
-
-**Prerequisites**: Git, Node.js, npm, docker
-
-**Cloning the Repository**
-
-```bash
-git clone https://github.com/harshitrajsinha/spotify-clone-devops.git
-```
-
-**Set Up configurations for backend**
-
-cd spotify-clone-devops/backend
-npm install
-cp .env.sample .env
-
-```env
-PORT=8000
-MONGODB_URI=
-ADMIN_EMAIL=
-NODE_ENV=development
-
-FRONTEND_URL=http://localhost:3000
-
-COGNITO_DOMAIN=
-COGNITO_CLIENT_ID=
-COGNITO_REDIRECT_URI=
-COGNITO_USER_POOL_ID=
-
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_REGION=
-S3_BUCKET_NAME=
-```
-
-**Running the backend Project**
-
-```bash
-cd spotify-clone-devops/backend
-npm run dev
-```
-Open [http://localhost:8000/api/health](http://localhost:8000/api/health) to test.
-
-**Set Up configurations for frontend**
-
-cd spotify-clone-devops/frontend
-npm install
-cp .env.sample .env
-
-```env
-VITE_BACKEND_URL=http://localhost:8000
->>>>>>> f7fe5e9 (readme update)
 VITE_MODE=development
 VITE_COGNITO_DOMAIN=
 VITE_COGNITO_CLIENT_ID=
@@ -259,4 +203,12 @@ cd spotify-clone-devops
 docker build --secret id=spotify-frontend-env,src=.env -t <image-name>:<version> -f docker/Dockerfile.frontend . # assuming .env is located in root directory with name .env
 docker run -p 80:80 <image-name>:<version> # Frontend docker container is exposed on port 80 (as we are using nginx as proxy server)
 ```
+<<<<<<< HEAD
 >>>>>>> f7fe5e9 (readme update)
+=======
+
+Problem with docker compose
+
+1. Could not scale on fixed port. Such as scaling backend would give error - "port is already allocated" by backend 1 on 8000. Sol - Make internal-only port
+2. Internal-only port resolves the allocated port issue by assigning random port on host => frontend and backend are no longer being served on desired ports - 80 and 8000 respectively. Sol - reverse proxy - traefik
+>>>>>>> babf4be (updating docker compose)
