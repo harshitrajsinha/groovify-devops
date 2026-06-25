@@ -76,25 +76,6 @@ variable "alb_listener_ssl_policy" {
   default     = "ELBSecurityPolicy-TLS13-1-2-Res-PQ-2025-09"
 }
 
-#################################
-
-variable "google_client_id" {
-  type = string
-  # default   = null
-  sensitive = true
-  # NOTE: The default value is explicitly commented to apply failure and enforce passing value for variable through command line
-  # IMP: When running terraform through CI pipeline, make sure to pass the values otherwise terraform would prompt and keep waiting for input
-}
-variable "google_client_secret" {
-  type = string
-  # default   = null
-  sensitive = true
-  # NOTE: The default value is explicitly commented to apply failure and enforce passing value for variable through command line
-  # IMP: When running terraform through CI pipeline, make sure to pass the values otherwise terraform would prompt and keep waiting for input
-}
-
-#################################
-
 variable "my_domain_name" {
   description = "My custom domain name"
   type        = string
@@ -107,11 +88,33 @@ variable "cognito_domain" {
   default     = "auth.harshitrajsinha.fun"
 }
 
+#################################
+
+variable "google_client_id" {
+  type = string
+  # default   = "null"
+  sensitive = true
+  # NOTE: The default value is explicitly commented to apply failure and enforce passing value for variable through command line
+}
+variable "google_client_secret" {
+  type = string
+  # default   = "null"
+  sensitive = true
+  # NOTE: The default value is explicitly commented to apply failure and enforce passing value for variable through command line
+}
+
 variable "is_certificate_issued" {
   description = "Boolean value on whether certificate is successfully issued and configured"
   type        = bool
   # default     = false  
   # NOTE: The default value is explicitly commented to apply failure and enforce passing value for variable through command line
-  # IMP: When running terraform through CI pipeline, make sure to pass the values otherwise terraform would prompt and keep waiting for input
+
+}
+
+variable "cognito_external_provider" {
+  description = "Cognito external Oauth provider"
+  type        = string
+  # default     = "Google"  
+  # NOTE: The default value is explicitly commented to apply failure and enforce passing value for variable through command line
 
 }

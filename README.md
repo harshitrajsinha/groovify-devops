@@ -3,7 +3,7 @@ This project is forked from [burakorkmez/realtime-spotify-clone](https://github.
 <br>
 
 
-<img src="/frontend/public/screenshot-for-readme.png" alt="Demo App" width="1000" height="400" />
+<img src="./frontend/public/screenshot-for-readme.png" alt="Demo App" width="1000" height="400" />
 <h2 align="center">Realtime Spotify Application ✨</h2><br>
 
 ### Setup .env file in _backend_ folder

@@ -33,8 +33,8 @@ resource "aws_cognito_user_pool_domain" "spotify_cognito_user_pool_domain" {
   user_pool_id    = aws_cognito_user_pool.spotify_cognito_user_pool.id
 }
 
-output "cognito_domain_cloudfront_distribution"{
-  value = var.is_certificate_issued ? aws_cognito_user_pool_domain.spotify_cognito_user_pool_domain[0].cloudfront_distribution: null # To be added to Domain provider as CNAME
+output "cognito_domain_cloudfront_distribution" {
+  value = var.is_certificate_issued ? aws_cognito_user_pool_domain.spotify_cognito_user_pool_domain[0].cloudfront_distribution : null # To be added to Domain provider as CNAME
 }
 
 # ---------------------------------------------------
@@ -42,15 +42,15 @@ output "cognito_domain_cloudfront_distribution"{
 resource "aws_cognito_user_pool_client" "spotify_cognito_user_pool_client" {
   name = "spotify-cognito-user-pool-client"
 
-  
-  user_pool_id = aws_cognito_user_pool.spotify_cognito_user_pool.id
-  generate_secret = true
+
+  user_pool_id                         = aws_cognito_user_pool.spotify_cognito_user_pool.id
+  generate_secret                      = true
   callback_urls                        = ["https://${var.my_domain_name}/auth-callback", "http://localhost:3000/auth-callback"]
   logout_urls                          = ["https://${var.my_domain_name}", "http://localhost:3000"]
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["email", "openid", "profile"]
-  supported_identity_providers         = concat(["COGNITO"], var.google_client_secret != null ? ["Google"] : [])
+  supported_identity_providers         = concat(["COGNITO"], var.google_client_secret != "null" && var.cognito_external_provider == "Google" ? ["Google"] : [])
 }
 
 output "aws_cognito_user_pool_client_id" {
@@ -61,7 +61,7 @@ output "aws_cognito_user_pool_client_id" {
 
 resource "aws_cognito_identity_provider" "cognito_google_provider" {
 
-  count         = var.google_client_id != null && var.google_client_secret != null ? 1 : 0
+  count         = var.google_client_id != "null" && var.google_client_secret != "null" ? 1 : 0
   user_pool_id  = aws_cognito_user_pool.spotify_cognito_user_pool.id
   provider_name = "Google"
   provider_type = "Google"
