@@ -59,7 +59,7 @@ chmod 600 "$BACKEND_ENV_FILE"
 FRONTEND_ENV_FILE="${PROJECT_DIR}/frontend/.env"
 > "$FRONTEND_ENV_FILE"
 
-for name in VITE_BACKEND_URL VITE_COGNITO_DOMAIN VITE_COGNITO_CLIENT_ID; do
+for name in VITE_BACKEND_URL VITE_COGNITO_DOMAIN VITE_COGNITO_CLIENT_ID VITE_MODE=; do
     value=$(aws ssm get-parameter --name "/spotify/$name" --with-decryption --query "Parameter.Value" --output text --region "$AWS_REGION")
     echo "${name}=${value}" >> "$FRONTEND_ENV_FILE"
 done
