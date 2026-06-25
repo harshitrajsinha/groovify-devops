@@ -13,6 +13,6 @@ export default defineConfig({
 	server: {
 		host: "0.0.0.0",
 		port: 3000,
-		allowedHosts: ['stunning-winner-gpq9pgx4769hwj6p-3000.app.github.dev']
+		allowedHosts: ['harshitrajsinha.fun']
 	},
 });
