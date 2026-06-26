@@ -15,6 +15,7 @@ const HomePage = () => {
 		madeForYouSongs,
 		featuredSongs,
 		trendingSongs,
+		fetchHealth,
 	} = useMusicStore();
 
 	const { initializeQueue } = usePlayerStore();
@@ -23,7 +24,7 @@ const HomePage = () => {
 		fetchFeaturedSongs();
 		fetchMadeForYouSongs();
 		fetchTrendingSongs();
-	}, [fetchFeaturedSongs, fetchMadeForYouSongs, fetchTrendingSongs]);
+	}, [fetchFeaturedSongs, fetchMadeForYouSongs, fetchTrendingSongs, fetchHealth]);
 
 	useEffect(() => {
 		if (madeForYouSongs.length > 0 && featuredSongs.length > 0 && trendingSongs.length > 0) {
