@@ -1,0 +1,67 @@
+services:
+  traefik:
+    image: traefik:v3.7
+    container_name: "traefik"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.network=traefik"
+      - "--entrypoints.web.address=:80"
+    networks:
+      - traefik
+    ports:
+      - "80:80"
+      - "8080:8080" # dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    image: backend-image:latest
+    expose:
+      - "8000"
+    env_file:
+      - backend/.env
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
+      - "traefik.http.services.backend.loadbalancer.server.port=8000"
+      - "traefik.http.routers.backend.priority=10"
+  
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+      secrets:
+        - spotify-frontend-env
+    image: frontend-image:latest
+    expose:
+      - "80"
+    networks:
+      - traefik
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      - "traefik.http.routers.frontend.priority=1"
+
+
+networks:
+  traefik:
+    driver: bridge
+secrets:
+  spotify-frontend-env:
+    file: frontend/.env
