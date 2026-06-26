@@ -5,11 +5,13 @@ services:
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
-      - "--providers.docker.network=traefik"
+      - "--providers.docker.network=traefik-net"
       - "--entrypoints.web.address=:80"
       - "--providers.docker.exposedbydefault=false" # starting with disabling any container to be exposed to traefik and later explicitly enabling specific container.
+      - "--log.level=INFO"
+      - "--accesslog=true"
     networks:
-      - traefik
+      - traefik-net
     ports:
       - "80:80"
       - "8080:8080" # For traefik dashboard
@@ -30,9 +32,10 @@ services:
     deploy:
       replicas: 1
     networks:
-      - traefik
+      - traefik-net
     labels:
       - "traefik.enable=true" # Enabling will allow exposing "this" container to traefik
+      #- "traefik.http.routers.backend.rule=Host(`localhost`) && PathPrefix(`/api`)"     ---> Enable this in EC2 as inside instance, it will run on localhost
       - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
       - "traefik.http.services.backend.loadbalancer.server.port=8000"
       - "traefik.http.routers.backend.priority=10"
@@ -47,7 +50,7 @@ services:
     expose:
       - "80"
     networks:
-      - traefik
+      - traefik-net
     restart: unless-stopped
     deploy:
       replicas: 1
@@ -58,8 +61,8 @@ services:
       - "traefik.http.routers.frontend.priority=1"
 
 networks:
-  traefik:
-    driver: bridge
+  traefik-net:
+    name: traefik-net
 secrets:
   spotify-frontend-env:
     file: frontend/.env
