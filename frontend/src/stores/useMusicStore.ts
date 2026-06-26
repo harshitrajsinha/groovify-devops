@@ -13,6 +13,7 @@ interface MusicStore {
 	madeForYouSongs: Song[];
 	trendingSongs: Song[];
 	stats: Stats;
+	health: string | null;
 
 	fetchAlbums: () => Promise<void>;
 	fetchAlbumById: (id: string) => Promise<void>;
@@ -23,6 +24,7 @@ interface MusicStore {
 	fetchSongs: () => Promise<void>;
 	deleteSong: (id: string) => Promise<void>;
 	deleteAlbum: (id: string) => Promise<void>;
+	fetchHealth: () => Promise<void>;
 }
 
 export const useMusicStore = create<MusicStore>((set) => ({
@@ -40,6 +42,7 @@ export const useMusicStore = create<MusicStore>((set) => ({
 		totalUsers: 0,
 		totalArtists: 0,
 	},
+	health: null,
 
 	deleteSong: async (id) => {
 		set({ isLoading: true, error: null });
@@ -93,6 +96,18 @@ export const useMusicStore = create<MusicStore>((set) => ({
 		try {
 			const response = await axiosInstance.get("/stats");
 			set({ stats: response.data });
+		} catch (error: any) {
+			set({ error: error.message });
+		} finally {
+			set({ isLoading: false });
+		}
+	},
+
+	fetchHealth: async () => {
+		set({ isLoading: true, error: null });
+		try {
+			const response = await axiosInstance.get("/health");
+			set({ health: response.data });
 		} catch (error: any) {
 			set({ error: error.message });
 		} finally {
