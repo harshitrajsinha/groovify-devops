@@ -3,22 +3,47 @@ This project is forked from [burakorkmez/realtime-spotify-clone](https://github.
 <br>
 
 
-<img src="./frontend/public/screenshot-for-readme.png" alt="Demo App" width="1000" height="400" />
+<img src="./frontend/public/screenshot-for-readme.png" alt="Demo App" width="1000" height="200" />
 <h2 align="center">Realtime Spotify Application ✨</h2><br>
 
-### Setup .env file in _backend_ folder
+## 📋 <a name="table">Table of Contents</a>
+
+1. [Tech Stack](#tech-stack)
+2. [Quick Start](#quick-start)
+3. [Devopsification of the project](#devops)
+
+## <a name="tech-stack">Tech Stack</a>
+<p>1. Frontend - Typescript, React, Tailwind, Zustand, Vite</p>
+<p>2. Backend - Node, Express</p>
+<p>3. AWS - Cognito (Auth), S3 (Object storage), DocumentDB (Database)</p>
+<p>4. Traefik as reverse proxy (if using Docker)
+
+## <a name="quick-start">Quick Start (via DOcker)</a>
+
+**Prerequisites**: Git, Docker
+
+**Cloning the Repository**
 
 ```bash
-PORT=
-MONGODB_URI=
+git clone https://github.com/harshitrajsinha/spotify-clone-devops.git
+cd spotify-clone-devops
+```
+
+**Set Up Environment Variables**
+
+#### Setup .env file in _backend_ folder
+
+```env
+PORT=8000
+MONGODB_URI=<mongodb cloud>
 ADMIN_EMAIL=
-NODE_ENV=
+NODE_ENV=development
 
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
 CLOUDINARY_CLOUD_NAME=
 
-FRONTEND_URL=
+FRONTEND_URL=http://localhost # (Traefik reverse proxy endpoint)
 
 COGNITO_DOMAIN=
 COGNITO_CLIENT_ID=
@@ -27,13 +52,18 @@ COGNITO_REDIRECT_URI=
 COGNITO_USER_POOL_ID=
 ```
 
-### Setup .env file in _frontend_ folder
+#### Setup .env file in _frontend_ folder
 
-```bash
-VITE_BACKEND_URL=
-
+```env
+VITE_BACKEND_URL=http://localhost # (Traefik reverse proxy endpoint)
+VITE_MODE=development
 VITE_COGNITO_DOMAIN=
 VITE_COGNITO_CLIENT_ID=
+```
+
+**Building and Running the Project**
+```
+docker compose up --build
 ```
 
 ## AWS-native architecture
