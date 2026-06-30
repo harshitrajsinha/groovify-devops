@@ -106,3 +106,7 @@ variable "google_client_secret" {
 variable "my_ip_cidr" {
   type = string
 }
+
+variable "ssh_public_key" {
+  type = string
+}

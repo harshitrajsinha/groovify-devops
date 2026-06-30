@@ -66,7 +66,7 @@ resource "aws_security_group" "bastion_host_sg" {
 
 resource "aws_key_pair" "spotify_bastion_key" {
   key_name   = "bastion-key"
-  public_key = file(pathexpand("~/.ssh/id_ed25519.pub"))
+  public_key = var.ssh_public_key
   tags = {
     Project     = "${var.project_name_tag}"
     Terraform   = "true"
