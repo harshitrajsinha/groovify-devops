@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Wrt App server infrastructure
 
 ## To be checked
@@ -45,3 +46,6 @@
 
 1. Terraform plan, apply and destroy will prompt for three inputs -
 - Public key for SSH connection
+=======
+# Terraform
+>>>>>>> d3c2950 (copy terraform code from main to dev)
