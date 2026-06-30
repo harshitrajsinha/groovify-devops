@@ -45,7 +45,7 @@ resource "aws_iam_instance_profile" "appserver_instance_profile" {
 # Key pair to access app server in private subnet
 resource "aws_key_pair" "spotify_appserver_key" {
   key_name   = "appserver-key"
-  public_key = file(pathexpand("~/.ssh/id_ed25519.pub"))
+  public_key = var.ssh_public_key
   tags = {
     Project     = "${var.project_name_tag}"
     Terraform   = "true"

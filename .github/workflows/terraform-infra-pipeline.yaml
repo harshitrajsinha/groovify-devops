@@ -28,6 +28,8 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
   GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+  SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+
 
 permissions:
   contents: read
@@ -77,6 +79,7 @@ jobs:
             -var="my_ip_cidr=${{ github.event.inputs.my_ip_cidr }}" \
             -var="google_client_id=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}" \
             -var="google_client_secret=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}" \
+            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
             -auto-approve \
             -input=false
   
@@ -87,6 +90,7 @@ jobs:
             -var="my_ip_cidr=${{ github.event.inputs.my_ip_cidr }}" \
             -var="google_client_id=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}" \
             -var="google_client_secret=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}" \
+            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
             -auto-approve \
             -input=false
 
@@ -97,5 +101,6 @@ jobs:
             -var="my_ip_cidr=${{ github.event.inputs.my_ip_cidr }}" \
             -var="google_client_id=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}" \
             -var="google_client_secret=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}" \
+            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
             -auto-approve \
             -input=false
