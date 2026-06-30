@@ -80,8 +80,8 @@ jobs:
             -var="google_client_id=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}" \
             -var="google_client_secret=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}" \
             -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
-            -input=false
-            -out=tfplan
+            -input=false \
+            -out=ga/tfplan
   
       - name: Terraform Apply
         if: github.event.inputs.terraform_action == 'apply'
@@ -91,7 +91,7 @@ jobs:
             -var="google_client_id=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}" \
             -var="google_client_secret=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}" \
             -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
-            -auto-approve \
+            -auto-approve ga/tfplan \
             -input=false
 
       - name: Terraform Destroy
@@ -102,5 +102,5 @@ jobs:
             -var="google_client_id=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}" \
             -var="google_client_secret=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}" \
             -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
-            -auto-approve \
+            -auto-approve ga/tfplan \
             -input=false
