@@ -1,6 +1,6 @@
 resource "aws_s3_bucket" "spotify_app_s3" {
   bucket = var.s3_bucket_name_spotify
-
+  force_destroy = true
   tags = {
     Project     = "${var.project_name_tag}"
     Terraform   = "true"
