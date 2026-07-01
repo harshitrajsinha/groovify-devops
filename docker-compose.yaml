@@ -28,6 +28,8 @@ services:
     env_file:
       - backend/.env
     restart: unless-stopped
+    volumes:
+      - /opt/certs/global-bundle.pem:/app/certs/global-bundle.pem:ro
     ############################   CPU and memory limit required
     deploy:
       replicas: 1 # Pre-allocate replicas based on capability of t3a.medium because auto-scaling is not possible in docker
