@@ -7,7 +7,7 @@ variable "region" {
 variable "project_name_tag" {
   description = "Name of the project for which infrastructure is being provisioned"
   type        = string
-  default     = "spotify"
+  default     = "spotify-project"
 }
 
 variable "project_env_tag" {
@@ -50,6 +50,10 @@ variable "ubuntu_ami_id" {
   description = "AMI of Ubuntu 24.04"
   type        = string
   default     = "ami-0f8a61b66d1accaee"
+}
+
+variable "sonarqube_image" {
+  default = "sonarqube:lts-community"
 }
 
 variable "appserver_instance_type" {
@@ -98,6 +102,18 @@ variable "docdb_master_username" {
   description = "Master username for docdb"
   type        = string
   sensitive   = true
+}
+
+variable "remote_backend_bucket_name" {
+  description = "S3 bucket name to store terraform state file"
+  type        = string
+  default = "spotify-project-terraform-state"
+}
+
+variable "remote_backend_bucket_key" {
+  description = "S3 bucket key for remote backend"
+  type        = string
+  default = "spotify/terraform.tfstate"
 }
 
 #################################

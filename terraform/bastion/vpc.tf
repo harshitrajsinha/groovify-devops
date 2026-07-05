@@ -1,0 +1,88 @@
+resource "aws_vpc" "vpc_spotify_project_bastion" {
+  cidr_block           = var.vpc_cidr
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+  instance_tenancy     = "default"
+  tags = {
+    Project     = "${var.project_tag}"
+    Terraform   = "true"
+    Environment = "${var.project_environment}"
+  }
+}
+
+# create internet gateway for traffic from internet
+resource "aws_internet_gateway" "igw_spotify_project_bastion" {
+  vpc_id = aws_vpc.vpc_spotify_project_bastion.id
+  tags = {
+    Project     = "${var.project_tag}"
+    Terraform   = "true"
+    Environment = "${var.project_environment}"
+  }
+}
+
+# create public subnet
+resource "aws_subnet" "public_subnet_spotify_project_bastion" {
+  vpc_id                  = aws_vpc.vpc_spotify_project_bastion.id
+  availability_zone       = var.infra_azs
+  cidr_block              = var.public_subnet_cidr
+  map_public_ip_on_launch = true
+  tags = {
+    Project     = "${var.project_tag}"
+    Terraform   = "true"
+    Environment = "${var.project_environment}"
+  }
+}
+
+# create public route table
+resource "aws_route_table" "public_rt_spotify_project_bastion" {
+  vpc_id = aws_vpc.vpc_spotify_project_bastion.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw_spotify_project_bastion.id
+  }
+  tags = {
+    Project     = "${var.project_tag}"
+    Terraform   = "true"
+    Environment = "${var.project_environment}"
+  }
+}
+
+# associate public subnet to public route table
+resource "aws_route_table_association" "public_rt_assn" {
+  route_table_id = aws_route_table.public_rt_spotify_project_bastion.id
+  subnet_id      = aws_subnet.public_subnet_spotify_project_bastion.id
+}
+
+
+data "http" "my_ip" {
+  url = "https://checkip.amazonaws.com"
+}
+
+# Security group for bastion host
+
+resource "aws_security_group" "bastion_host_sg" {
+  name        = "spotify-sg-bastion"
+  description = "Security group for bastion host"
+  vpc_id      = aws_vpc.vpc_spotify_project_bastion.id
+
+  tags = {
+    Project     = "${var.project_tag}"
+    Terraform   = "true"
+    Environment = "${var.project_environment}"
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks =  ["${chomp(data.http.my_ip.response_body)}/32"]
+  }
+
+}
