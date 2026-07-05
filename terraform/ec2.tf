@@ -73,7 +73,7 @@ resource "aws_instance" "spotify_app_server" {
   associate_public_ip_address = false
   iam_instance_profile        = aws_iam_instance_profile.appserver_instance_profile.name
   key_name                    = aws_key_pair.spotify_appserver_key.key_name
-  subnet_id                   = element(module.vpc.private_subnets, 0) # element() performs modulo operation to avoid out of bound error
+  subnet_id                   = module.vpc.private_subnets
   user_data_base64            = base64encode(file("./app-server-user-data.sh"))
   vpc_security_group_ids      = [aws_security_group.spotify_appserver_sg.id]
   tags = {
