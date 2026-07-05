@@ -3,10 +3,13 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
-// import { Song } from "../models/song.model.js";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import s3Client from "../lib/s3.js";
+import { Song } from "./song.model.js";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import s3Client from "./s3.js";
+import crypto  from "crypto";
+
+import dotenv from "dotenv";
+dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -14,40 +17,17 @@ const SONGS_DIR = path.join(__dirname, "songs");
 const COVER_DIR = path.join(__dirname, "cover-images");
 const METADATA_PATH = path.join(__dirname, "songs-metadata.json");
 
-import mongoose from "mongoose";
+const MIME_TYPES = {
+  ".mp3": "audio/mpeg",
+  ".wav": "audio/wav",
+  ".m4a": "audio/mp4",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+  ".webp": "image/webp",
+};
 
-const songSchema = new mongoose.Schema(
-	{
-		title: {
-			type: String,
-			required: true,
-		},
-		artist: {
-			type: String,
-			required: true,
-		},
-		imageUrl: {
-			type: String,
-			required: true,
-		},
-		audioUrl: {
-			type: String,
-			required: true,
-		},
-		duration: {
-			type: Number,
-			required: true,
-		},
-		albumId: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Album",
-			required: false,
-		},
-	},
-	{ timestamps: true }
-);
-
-const Song = mongoose.model("Song", songSchema);
+const getMimeType = (ext) => MIME_TYPES[ext.toLowerCase()] || "application/octet-stream";
 
 const uploadToS3 = async (file, uploadKey) => {
   try {
@@ -77,40 +57,45 @@ const uploadToS3 = async (file, uploadKey) => {
   }
 };
 
-const saveSong = async ({ title, artist, albumId, duration, audioFilePath, imageFilePath }) => {
+const saveSong = async ({ title, artist, duration, audioFilePath, imageFilePath }) => {
   try{ 
+
+    const audioExt = path.extname(audioFilePath);
+    const imageExt = path.extname(imageFilePath);
+    
     const audioFile = {
       name: path.basename(audioFilePath),
       tempFilePath: audioFilePath,
-      mimetype: "audio/mpeg", // adjust based on ext if needed
+      mimetype: getMimeType(audioExt),
     };
-
+  
     const imageFile = {
       name: path.basename(imageFilePath),
       tempFilePath: imageFilePath,
-      mimetype: "image/jpeg", // adjust based on ext if needed
+      mimetype: getMimeType(imageExt),
     };
 
     const audioUrl = await uploadToS3(audioFile, "audio");
     const imageUrl = await uploadToS3(imageFile, "image");
 
+    // Save to database
     const song = new Song({
       title,
       artist,
       audioUrl,
       imageUrl,
       duration,
-      albumId: albumId || null,
+      // albumId: albumId || null,
     });
     
     await song.save();
 
     // if song belongs to an album, update the album's songs array
-    if (albumId) {
-      await Album.findByIdAndUpdate(albumId, {
-        $push: { songs: song._id },
-      });
-    }
+    // if (albumId) {
+    //   await Album.findByIdAndUpdate(albumId, {
+    //     $push: { songs: song._id },
+    //   });
+    // }
     return song;
   } catch (error) {
 		console.log("Error in saving song", error);
@@ -142,12 +127,18 @@ const seedSongs = async () => {
       }
 
       console.log(`Uploading: ${title}`);
+      
+      // check if songs already exists in database
+      const existing = await Song.findOne({ title, artist });
+      if (existing) {
+        console.log(`Skipping "${title}" — already exists in DB`);
+        continue;
+      }
 
       // upload to s3 and save to db
       const song = await saveSong({
         title,
         artist,
-        albumId,
         duration,
         audioFilePath,
         imageFilePath,
