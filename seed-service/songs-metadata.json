@@ -12,5 +12,19 @@
 		"imageFileName": "18.jpg",
 		"audioFileName": "18.mp3",
 		"duration": 29
+	},
+	{
+		"title": "Stay With Me",
+		"artist": "Sarah Mitchell",
+		"imageFileName": "3.jpg",
+		"audioFileName": "1.mp3",
+		"duration": 46
+	},
+	{
+		"title": "Midnight Drive",
+		"artist": "The Wanderers",
+		"imageFileName": "4.jpg",
+		"audioFileName": "2.mp3",
+		"duration": 41
 	}
 ]

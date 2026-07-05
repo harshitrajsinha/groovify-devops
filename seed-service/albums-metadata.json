@@ -1,0 +1,34 @@
+[
+   {
+      "title":"Urban Nights",
+      "artist":"Various Artists",
+      "imageFileName":"1.jpg",
+      "releaseYear":2024,
+      "songs":[
+         {
+            "title":"Neon Tokyo",
+            "artist":"Future Pulse"
+         },
+         {
+            "title":"Midnight Blues",
+            "artist":"Jazz Cats"
+         }
+      ]
+   },
+   {
+      "title":"Coastal Dreaming",
+      "artist":"Various Artists",
+      "imageFileName":"2.jpg",
+      "releaseYear":2024,
+      "songs":[
+         {
+            "title":"Stay With Me",
+            "artist":"Sarah Mitchell"
+         },
+         {
+            "title":"Midnight Drive",
+            "artist":"The Wanderers"
+         }
+      ]
+   }
+]
