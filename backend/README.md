@@ -3,13 +3,15 @@
 1. Setup .env in backend/ directory (refer .env.sample)
 ```env
 PORT=8000
-MONGODB_URI=mongodb+srv://username:password@cluster0.sampleurl.mongodb.net/spotify?appName=Cluster0
+DOCUMENTDB_URI=mongodb+srv://username:password@cluster0.sampleurl.mongodb.net/spotify?appName=Cluster0
 ADMIN_EMAIL=youremailid@emailprovider
 NODE_ENV=development
 
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-CLOUDINARY_CLOUD_NAME=
+AWS_REGION=
+S3_BUCKET_NAME=
+
+# AWS_ACCESS_KEY_ID
+# AWS_SECRET_ACCESS_KEY
 
 FRONTEND_URL=http://localhost:3000
 

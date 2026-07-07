@@ -9,13 +9,15 @@ Also, <u>frontend port is changed from 3000 to 80</u> as nginx is used to serve 
 1. Setup .env in backend/ directory (refer .env.sample)
 ```env
 PORT=8000
-MONGODB_URI=<using mongodb cloud>
+DOCUMENTDB_URI=<using mongodb cloud>
 ADMIN_EMAIL=
 NODE_ENV=development
 
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-CLOUDINARY_CLOUD_NAME=
+AWS_REGION=
+S3_BUCKET_NAME=
+
+# AWS_ACCESS_KEY_ID
+# AWS_SECRET_ACCESS_KEY
 
 FRONTEND_URL=http://localhost:80
 

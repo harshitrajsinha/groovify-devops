@@ -55,13 +55,15 @@ cd spotify-clone-devops
 
 ```env
 PORT=8000
-MONGODB_URI=<mongodb cloud>
+DOCUMENTDB_URI=<mongodb cloud>
 ADMIN_EMAIL=
 NODE_ENV=development
 
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-CLOUDINARY_CLOUD_NAME=
+AWS_REGION=
+S3_BUCKET_NAME=
+
+# AWS_ACCESS_KEY_ID
+# AWS_SECRET_ACCESS_KEY
 
 FRONTEND_URL=http://localhost # (Traefik reverse proxy endpoint)
 
@@ -100,16 +102,15 @@ NOTE: Data is loaded into database manually because adding this script into Dock
 
 ### 🐳 Dockerizing frontend and backend application
 
-Using `node:24.16.0-alpine3.23` image size as the baseline, successfully dockerized the frontend and backend services while keeping the final image sizes to just 22% and 14% above the baseline, respectively.
+The backend and frontend services have been successfully containerized using a multi-stage Docker build approach, with `node:24.16.0-alpine3.23` and `nginx:stable-alpine3.23` as the respective final-stage base images. As a result, the final application images are only 16% (backend) and 4% (frontend) larger than their minimal runtime base images, by following Docker image optimization best practices
 
-![docker-image](./assets/spotify-docker-images-v2.png) 
+![docker-image](./assets/project-docker-image.png) 
 
 #### Learnings:
 
 1. Secured frontend Docker image build-time environment variables using Build Secrets.<br/><br/>
-2. Slightly improved the build time by combining copying and changing file ownership into single command (this could have significant impact depending on number of application files)
-
-
+2. Improved the build time by combining copying and changing file ownership into single command (this could have significant impact depending on number of application files)
+<br/><br/>
 
 ## AWS-native architecture
 ![Architecture](/assets/spotify-clone-devops-arc.png)
