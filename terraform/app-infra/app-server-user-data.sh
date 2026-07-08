@@ -28,6 +28,13 @@ fi
 sudo chown -R ubuntu:ubuntu spotify-clone-devops
 
 ##############################################################
+# Install node
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.5/install.sh | bash
+\. "/home/ubuntu/.nvm/nvm.sh"
+nvm install 24
+
+##############################################################
 # Install docker
 if ! docker --version > /dev/null 2>&1; then
     sudo apt remove $(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)
@@ -59,14 +66,25 @@ EOF
 fi
 
 ##############################################################
-sudo mkdir -p /opt/certs
 
 # Download AWS DocumentDB / RDS global CA bundle
-sudo curl -fsSL \
-  https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem \
-  -o /opt/certs/global-bundle.pem
+if [ ! -f /opt/certs/global-bundle.pem ]; then
+    sudo mkdir -p /opt/certs
 
-sudo chmod 444 /opt/certs/global-bundle.pem
+    sudo curl -fsSL \
+      https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem \
+      -o /opt/certs/global-bundle.pem
+
+    sudo chmod 444 /opt/certs/global-bundle.pem
+fi
+
+# Install mongosh (mongodb shell) to access documentdb
+if ! command -v mongosh >/dev/null 2>&1; then
+    wget -qO- https://www.mongodb.org/static/pgp/server-8.0.asc | sudo tee /etc/apt/trusted.gpg.d/server-8.0.asc
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+    sudo apt-get update -y
+    sudo apt-get install -y mongodb-mongosh
+fi
 
 ##############################################################
 # Create .env file in backend and frontend by fetching values from AWS SSM parameter store
@@ -83,7 +101,7 @@ fi
 BACKEND_ENV_FILE="${PROJECT_DIR}/backend/.env"
 > "$BACKEND_ENV_FILE" # Truncate or create file
 
-for name in PORT MONGODB_URI ADMIN_EMAIL NODE_ENV S3_BUCKET_NAME FRONTEND_URL COGNITO_DOMAIN COGNITO_CLIENT_ID COGNITO_CLIENT_SECRET COGNITO_REDIRECT_URI COGNITO_USER_POOL_ID; do
+for name in PORT MONGODB_URI ADMIN_EMAIL NODE_ENV S3_BUCKET_NAME AWS_REGION FRONTEND_URL COGNITO_DOMAIN COGNITO_CLIENT_ID COGNITO_CLIENT_SECRET COGNITO_REDIRECT_URI COGNITO_USER_POOL_ID; do
     value=$(aws ssm get-parameter --name "/spotify/$name" --with-decryption --query "Parameter.Value" --output text --region "$AWS_REGION")
     echo "${name}=${value}" >> "$BACKEND_ENV_FILE"
 done

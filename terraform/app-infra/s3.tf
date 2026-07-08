@@ -1,10 +1,9 @@
 resource "aws_s3_bucket" "spotify_app_s3" {
-  bucket = var.s3_bucket_name_spotify
+  bucket        = var.s3_bucket_name_spotify
   force_destroy = true
   tags = {
-    Project     = "${var.project_name_tag}"
-    Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Project   = var.project_name_tag
+    Terraform = "true"
   }
 }
 
@@ -25,6 +24,24 @@ resource "aws_s3_bucket_ownership_controls" "spotify_app_s3_bucket_ownership" {
 
   rule {
     object_ownership = "BucketOwnerPreferred" # Imp?
+  }
+}
+
+resource "aws_s3_bucket_versioning" "spotify_app_s3_bucket_versioning" {
+  bucket = aws_s3_bucket.spotify_app_s3.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "spotify_app_s3_bucket_encrypt" {
+  bucket = aws_s3_bucket.spotify_app_s3.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
   }
 }
 

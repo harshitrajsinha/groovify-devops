@@ -4,9 +4,8 @@ data "aws_acm_certificate" "spotify_domain_certificate" {
   statuses = ["ISSUED"]
 
   tags = {
-    Project     = "${var.project_name_tag}"
-    Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Project   = var.project_name_tag
+    Terraform = "true"
   }
 }
 
@@ -32,9 +31,8 @@ resource "aws_lb_target_group" "spotify_appserver_tg" {
   }
 
   tags = {
-    Project     = "${var.project_name_tag}"
-    Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Project   = var.project_name_tag
+    Terraform = "true"
   }
 
   depends_on = [aws_instance.spotify_app_server]
@@ -50,18 +48,18 @@ resource "aws_lb_target_group_attachment" "spotify_appserver_frontend_tg_attn" {
 # Application load balancer configuration
 
 resource "aws_lb" "spotify_appserver_alb" {
-  name               = "spotify-appserver-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.spotify_alb_sg.id]
-  subnets            = module.vpc.public_subnets
+  name                       = "spotify-appserver-alb"
+  drop_invalid_header_fields = true
+  internal                   = false
+  load_balancer_type         = "application"
+  security_groups            = [aws_security_group.spotify_alb_sg.id]
+  subnets                    = module.vpc.public_subnets
 
   enable_deletion_protection = false # turn it true in production
 
   tags = {
-    Project     = "${var.project_name_tag}"
-    Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Project   = var.project_name_tag
+    Terraform = "true"
   }
 }
 

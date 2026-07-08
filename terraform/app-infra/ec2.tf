@@ -59,27 +59,50 @@ resource "aws_iam_instance_profile" "appserver_instance_profile" {
 # Key pair to access app server in private subnet
 resource "aws_key_pair" "spotify_appserver_key" {
   key_name   = "appserver-key"
-  public_key = file(pathexpand("~/.ssh/id_ed25519.pub"))
+  public_key = var.appserver_public_key
   tags = {
-    Project     = "${var.project_name_tag}"
-    Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Project   = var.project_name_tag
+    Terraform = "true"
+  }
+}
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  owners = ["099720109477"]
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
   }
 }
 
 resource "aws_instance" "spotify_app_server" {
-  ami                         = var.ubuntu_ami_id
+  ami                         = var.project_env == "production" ? data.aws_ami.ubuntu.id : var.custom_dev_ubuntu_ami_id
   instance_type               = var.appserver_instance_type
   associate_public_ip_address = false
   iam_instance_profile        = aws_iam_instance_profile.appserver_instance_profile.name
   key_name                    = aws_key_pair.spotify_appserver_key.key_name
-  subnet_id                   = module.vpc.private_subnets
-  user_data_base64            = base64encode(file("./app-server-user-data.sh"))
+  subnet_id                   = element(module.vpc.private_subnets, 0)
+  user_data_base64            = var.project_env == "production" ? base64encode(file("./app-server-user-data.sh")) : base64encode(file("./devapp-server-user-data.sh"))
   vpc_security_group_ids      = [aws_security_group.spotify_appserver_sg.id]
   tags = {
-    Project     = "${var.project_name_tag}"
-    Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Project   = var.project_name_tag
+    Terraform = "true"
+  }
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
+
+  root_block_device {
+    encrypted = true
   }
 
   depends_on = [

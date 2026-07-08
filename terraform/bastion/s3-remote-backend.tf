@@ -1,22 +1,23 @@
-resource "aws_s3_bucket" "terraform_state" {
-  bucket = var.bucket_name
+# S3 bucket that 
+resource "aws_s3_bucket" "app_infra_remote_storage" {
+  bucket        = var.bucket_name
+  force_destroy = true
   tags = {
-    Project     = "${var.project_tag}"
-    Terraform   = "true"
-    Environment = "${var.project_environment}"
+    Project   = var.project_tag
+    Terraform = "true"
   }
 }
 
-resource "aws_s3_bucket_versioning" "terraform_state" {
-  bucket = aws_s3_bucket.terraform_state.id
+resource "aws_s3_bucket_versioning" "app_infra_remote_storage_versioning" {
+  bucket = aws_s3_bucket.app_infra_remote_storage.id
 
   versioning_configuration {
     status = "Enabled"
   }
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" {
-  bucket = aws_s3_bucket.terraform_state.id
+resource "aws_s3_bucket_server_side_encryption_configuration" "app_infra_remote_storage_encrypt" {
+  bucket = aws_s3_bucket.app_infra_remote_storage.id
 
   rule {
     apply_server_side_encryption_by_default {
@@ -25,8 +26,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" 
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "terraform_state" {
-  bucket = aws_s3_bucket.terraform_state.id
+resource "aws_s3_bucket_public_access_block" "app_infra_remote_storage_access" {
+  bucket                  = aws_s3_bucket.app_infra_remote_storage.id
   block_public_acls       = true
   ignore_public_acls      = true
   block_public_policy     = true

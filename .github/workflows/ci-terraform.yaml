@@ -1,0 +1,88 @@
+name: CI pipeline - terraform, to run security scan, formatting and validation of terraform resource code
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/**' # to be removed in production
+
+jobs:
+
+  terraform:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      security-events: write  # Required to Trivy upload SARIF files to Security tab
+
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
+
+      # Secret Scan
+      - name: Secret scan
+        uses: gitleaks/gitleaks-action@v2.3.9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_NOTIFY_USER_LIST: '@harshitrajsinha'
+        continue-on-error: true
+
+      # Install Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.15.7"
+
+      # Format Check
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
+
+      # Init (backend disabled)
+      - name: Terraform Init
+        run: terraform init -backend=false -input=false
+
+      # Syntax Validation
+      - name: Terraform Validate
+        run: terraform validate
+
+      # TF Lint
+      - uses: terraform-linters/setup-tflint@v6
+        name: Setup TFLint
+        with:
+          cache: true
+
+      - name: Init TFLint
+        run: tflint --init
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Run TFLint
+        run: tflint -f compact
+      
+      # Trivy Security scan
+      - name: Trivy vulnerability scanner in IaC mode
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'config'
+          scan-ref: ./terraform
+          hide-progress: true
+          format: 'sarif'
+          output: 'trivy-results-terraform.sarif'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: 'trivy-results-terraform.sarif'
+
+

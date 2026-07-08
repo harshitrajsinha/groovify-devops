@@ -1,84 +1,47 @@
-# Terraform
+# Wrt App server infrastructure
 
-data.aws_acm_certificate.spotify_domain_certificate
-data.aws_iam_policy_document.ec2_assume_role
-data.aws_iam_policy_document.permission_to_access_s3_bucket
-data.aws_iam_policy_document.permission_to_ssm_read
-data.aws_iam_policy_document.policy_for_ec2_assume
-data.aws_secretsmanager_secret_version.docdb_password
-data.http.my_ip
-aws_cognito_identity_provider.cognito_google_provider[0]
-aws_cognito_user_pool.spotify_cognito_user_pool
-aws_cognito_user_pool_client.spotify_cognito_user_pool_client
-aws_cognito_user_pool_domain.spotify_cognito_user_pool_domain
-aws_docdb_cluster.spotify_docdb
-aws_docdb_cluster_instance.spotify_docdb_reader
-aws_docdb_cluster_instance.spotify_docdb_writer
-aws_docdb_subnet_group.spotify_docdb_subnet_grp
-aws_iam_instance_profile.appserver_instance_profile
-aws_iam_instance_profile.terraform_bastion_profile
-aws_iam_role.bastion_iam_role
-aws_iam_role.ec2_role
-aws_iam_role_policy.attach_perm_s3_bucket_access
-aws_iam_role_policy.attach_perm_ssm_read
-aws_iam_role_policy_attachment.administrator_access
-aws_instance.spotify_app_server
-aws_instance.spotify_bastion
-aws_key_pair.spotify_appserver_key
-aws_key_pair.spotify_bastion_key
-aws_lb.spotify_appserver_alb
-aws_lb_listener.spotify_appserver_alb_listener_443
-aws_lb_listener.spotify_appserver_alb_listener_80
-aws_lb_target_group.spotify_appserver_tg
-aws_lb_target_group_attachment.spotify_appserver_frontend_tg_attn
-aws_s3_bucket.spotify_app_s3
-aws_s3_bucket_cors_configuration.spotify_app_s3_bucket_cors
-aws_s3_bucket_ownership_controls.spotify_app_s3_bucket_ownership
-aws_s3_bucket_public_access_block.spotify_app_s3_bucket_public_access
-aws_security_group.bastion_host_sg
-aws_security_group.spotify_alb_sg
-aws_security_group.spotify_appserver_sg
-aws_security_group.spotify_docdb_sg
-aws_security_group_rule.sg_rule_alb_egress_80
-aws_security_group_rule.sg_rule_alb_ingress_http
-aws_security_group_rule.sg_rule_alb_ingress_https
-aws_security_group_rule.sg_rule_appserver_egress
-aws_security_group_rule.sg_rule_appserver_ingress_22
-aws_security_group_rule.sg_rule_appserver_ingress_80
-aws_security_group_rule.sg_rule_docdb_ingress
-aws_ssm_parameter.cognito_clientid
-aws_ssm_parameter.cognito_clientsec
-aws_ssm_parameter.cognito_userpoolid
-aws_ssm_parameter.docdb_connection_string
-aws_ssm_parameter.s3_bucket_spotify
-aws_ssm_parameter.vite_cognito_clientid
-module.vpc.aws_default_network_acl.this[0]
-module.vpc.aws_default_route_table.default[0]
-module.vpc.aws_default_security_group.this[0]
-module.vpc.aws_eip.nat[0]
-module.vpc.aws_internet_gateway.this[0]
-module.vpc.aws_nat_gateway.this[0]
-module.vpc.aws_route.private_nat_gateway[0]
-module.vpc.aws_route.public_internet_gateway[0]
-module.vpc.aws_route_table.intra[0]
-module.vpc.aws_route_table.private[0]
-module.vpc.aws_route_table.public[0]
-module.vpc.aws_route_table_association.intra[0]
-module.vpc.aws_route_table_association.intra[1]
-module.vpc.aws_route_table_association.intra[2]
-module.vpc.aws_route_table_association.private[0]
-module.vpc.aws_route_table_association.private[1]
-module.vpc.aws_route_table_association.private[2]
-module.vpc.aws_route_table_association.public[0]
-module.vpc.aws_route_table_association.public[1]
-module.vpc.aws_route_table_association.public[2]
-module.vpc.aws_subnet.intra[0]
-module.vpc.aws_subnet.intra[1]
-module.vpc.aws_subnet.intra[2]
-module.vpc.aws_subnet.private[0]
-module.vpc.aws_subnet.private[1]
-module.vpc.aws_subnet.private[2]
-module.vpc.aws_subnet.public[0]
-module.vpc.aws_subnet.public[1]
-module.vpc.aws_subnet.public[2]
-module.vpc.aws_vpc.this[0]
+## To be checked
+
+1. For development -
+- AMI of app server is changed to custom AMI that has pre-installed packages (to save cost on NAT)
+- NAT gateway is removed (would make work only with vpc endpoints). Note that GoogleOAuth won't work without NAT.
+
+2. Is MONGODB_URI value in .env of backend correctly url-encoded as per password stored in secrets manager? 
+
+3. The following parameters needs to be already present in AWS System manager Parameter store (as they are static values) -
+- `/spotify/ADMIN_EMAIL`
+- `/spotify/COGNITO_DOMAIN`
+- `/spotify/COGNITO_REDIRECT_URI`
+- `/spotify/FRONTEND_URL`
+- `/spotify/NODE_ENV`
+- `/spotify/PORT`
+- `/spotify/VITE_BACKEND_URL`
+- `/spotify/VITE_COGNITO_DOMAIN`
+- `/spotify/VITE_MODE`
+- `/spotify/AWS_REGION`
+
+4. Ensure that VPC, IGW, security groups, key pairs etc. have not reached creation limit.
+
+## Pre applying
+
+1. Terraform plan, apply and destroy will prompt for three inputs -
+- DocumentDB master username
+- Cognito GoogleOAuth client id
+- Cognito GoogleOAuth client secret
+- Project environment: "production" or "development"
+- Public key for SSH connection
+
+## Post applying
+
+2. Terraform will output following important values
+- ALB dns, which needs to be nslookedup and configured in DNS provider
+- Cognito cloudfront, which needs to be configured in DNS provider as CNAME
+- Public IP of bastion host and Private IP of App server (for SSH)
+
+
+# Wrt bastion infrastructure
+
+## Pre applying
+
+1. Terraform plan, apply and destroy will prompt for three inputs -
+- Public key for SSH connection

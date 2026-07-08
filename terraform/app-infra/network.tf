@@ -1,23 +1,30 @@
-module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
+# data "aws_security_group" "bastion_host_sg" {
+#   filter {
+#     name   = "group-name"
+#     values = [var.bastion_host_sg_name]
+#   }
+# }
 
-  name = "spotify"
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "6.6.1"
+
+  name = "spotify-project"
   cidr = var.vpc_cidr
 
   azs                     = var.infra_azs
   private_subnets         = var.private_subnet_cidr # 3 private subnets for application server
   public_subnets          = var.public_subnet_cidr  # 3 public subnet (1 for NAT)
   intra_subnets           = var.intra_subnet_cidr   # 3 intra subnets for document DB
-  map_public_ip_on_launch = true                    # For bastion host, if provisioned
+  map_public_ip_on_launch = false
 
-  enable_nat_gateway = true
-  single_nat_gateway = true
+  enable_nat_gateway = var.project_env == "production" ? true : false
+  single_nat_gateway = var.project_env == "production" ? true : false
   enable_vpn_gateway = false
 
   tags = {
-    Project     = "${var.project_name_tag}"
-    Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Project   = var.project_name_tag
+    Terraform = "true"
   }
 }
 
@@ -34,9 +41,8 @@ resource "aws_security_group" "spotify_alb_sg" {
   vpc_id      = module.vpc.vpc_id
 
   tags = {
-    Project     = "${var.project_name_tag}"
-    Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Project   = var.project_name_tag
+    Terraform = "true"
   }
 }
 
@@ -78,9 +84,8 @@ resource "aws_security_group" "spotify_appserver_sg" {
   vpc_id      = module.vpc.vpc_id
 
   tags = {
-    Project     = "${var.project_name_tag}"
-    Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Project   = var.project_name_tag
+    Terraform = "true"
   }
 }
 
@@ -95,18 +100,9 @@ resource "aws_security_group_rule" "sg_rule_appserver_ingress_80" {
   security_group_id        = aws_security_group.spotify_appserver_sg.id
 }
 
-# Ingress rule to allow SSH request
-resource "aws_security_group_rule" "sg_rule_appserver_ingress_22" {
-  type                     = "ingress"
-  from_port                = 22
-  to_port                  = 22
-  protocol                 = "tcp"
-  description              = "Traffic on 22 from Bastion host"
-  source_security_group_id = aws_security_group.bastion_host_sg.id
-  security_group_id        = aws_security_group.spotify_appserver_sg.id
-}
+### NOTE: There is not ingress rule to connect to app server, the only way (if needed) is to connect through app server's private IP, by creating "Instance connect" VPC Endpoint, via AWS Console
 
-
+# egress rule to allow outbound traffic from app server
 resource "aws_security_group_rule" "sg_rule_appserver_egress" {
   type              = "egress"
   from_port         = 0
@@ -121,17 +117,17 @@ resource "aws_security_group_rule" "sg_rule_appserver_egress" {
 ### Security group for DocumentDB
 resource "aws_security_group" "spotify_docdb_sg" {
   name        = "spotify-docdb-sg"
-  description = "Allow inbound traffic from appserver on port 27017"
+  description = "Allow inbound traffic from appserver and bastion host on port 27017"
   vpc_id      = module.vpc.vpc_id
 
   tags = {
-    Project     = "${var.project_name_tag}"
-    Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Project   = var.project_name_tag
+    Terraform = "true"
   }
 }
 
-resource "aws_security_group_rule" "sg_rule_docdb_ingress" {
+# Ingress rule on DocDB to allow request from app server
+resource "aws_security_group_rule" "sg_rule_docdb_ingress_appserver" {
   type                     = "ingress"
   from_port                = 27017
   to_port                  = 27017
@@ -140,3 +136,5 @@ resource "aws_security_group_rule" "sg_rule_docdb_ingress" {
   security_group_id        = aws_security_group.spotify_docdb_sg.id
   source_security_group_id = aws_security_group.spotify_appserver_sg.id
 }
+
+## Note: The only way to connect to documentdb to view records and documents (using mongosh) is through app server, as it is the only ingres rule docdb security group will accept

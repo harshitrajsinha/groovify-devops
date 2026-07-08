@@ -10,10 +10,9 @@ variable "project_name_tag" {
   default     = "spotify-project"
 }
 
-variable "project_env_tag" {
-  description = "Environment of the project for which infrastructure is being provisioned"
+variable "project_env" {
+  description = "Env of the project for which infrastructure is being provisioned"
   type        = string
-  default     = "dev"
 }
 
 variable "infra_azs" {
@@ -46,10 +45,16 @@ variable "intra_subnet_cidr" {
   default     = ["10.5.11.0/24", "10.5.12.0/24", "10.5.13.0/24"]
 }
 
-variable "ubuntu_ami_id" {
-  description = "AMI of Ubuntu 24.04"
+variable "bastion_host_sg_name" {
+  deprecated = "name of the bastion host security group that will be imported for reference"
+  type       = string
+  default    = "spotify-sg-bastion"
+}
+
+variable "custom_dev_ubuntu_ami_id" {
+  description = "Custom ubuntu-based AMI for development"
   type        = string
-  default     = "ami-0f8a61b66d1accaee"
+  default     = "ami-0727c2162ec7e3faa"
 }
 
 variable "sonarqube_image" {
@@ -98,6 +103,11 @@ variable "s3_bucket_name_spotify" {
   default     = "spotify-app-object-store"
 }
 
+variable "appserver_public_key" {
+  description = "SSH public key for the app server"
+  type        = string
+}
+
 variable "docdb_master_username" {
   description = "Master username for docdb"
   type        = string
@@ -107,13 +117,13 @@ variable "docdb_master_username" {
 variable "remote_backend_bucket_name" {
   description = "S3 bucket name to store terraform state file"
   type        = string
-  default = "spotify-project-terraform-state"
+  default     = "spotify-project-terraform-state"
 }
 
 variable "remote_backend_bucket_key" {
   description = "S3 bucket key for remote backend"
   type        = string
-  default = "spotify/terraform.tfstate"
+  default     = "spotify/terraform.tfstate"
 }
 
 #################################

@@ -223,6 +223,7 @@ jobs:
     needs: [image-build-release]
     runs-on: ubuntu-latest
 
+    # If branch is main then consider "production" environment else "development" environment - required for manual approval before updating compose file
     environment:
       name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
 

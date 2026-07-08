@@ -37,7 +37,7 @@ This project is forked from [burakorkmez/realtime-spotify-clone](https://github.
 <p>3. AWS - Cognito (Auth), S3 (Object storage), DocumentDB (Database)</p>
 <p>4. Traefik as reverse proxy (if using Docker)
 
-## <a name="quick-start">Quick Start (via Docker)</a>
+## <a name="quick-start">Quick Start (via Docker Compose)</a>
 
 **Prerequisites**: Git, Docker
 

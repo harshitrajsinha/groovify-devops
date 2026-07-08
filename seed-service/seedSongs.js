@@ -74,7 +74,10 @@ const seedSongs = async () => {
   try {
 
     // create database connection
-    await mongoose.connect(process.env.MONGODB_URI);
+    // await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect(process.env.MONGODB_URI, {
+      dbName: "spotify", tls: true, tlsCAFile: "/opt/certs/global-bundle.pem", replicaSet: "rs0", readPreference: "secondaryPreferred", retryWrites: false, authMechanism: "SCRAM-SHA-1"
+    });
 
     const metadata = JSON.parse(fs.readFileSync(METADATA_PATH, "utf-8"));
 

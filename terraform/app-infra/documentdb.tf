@@ -4,15 +4,15 @@ resource "aws_docdb_subnet_group" "spotify_docdb_subnet_grp" {
   subnet_ids = module.vpc.intra_subnets
 
   tags = {
-    Project     = "${var.project_name_tag}"
-    Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Project   = var.project_name_tag
+    Terraform = "true"
   }
 }
 
 # Cluster
 resource "aws_docdb_cluster" "spotify_docdb" {
   cluster_identifier          = "spotify-docdb-cluster"
+  storage_encrypted           = true
   engine                      = "docdb"
   availability_zones          = module.vpc.azs
   apply_immediately           = false
@@ -26,11 +26,9 @@ resource "aws_docdb_cluster" "spotify_docdb" {
   skip_final_snapshot         = true
   vpc_security_group_ids      = [aws_security_group.spotify_docdb_sg.id]
   tags = {
-    Project     = var.project_name_tag
-    Terraform   = "true"
-    Environment = var.project_env_tag
+    Project   = var.project_name_tag
+    Terraform = "true"
   }
-
 }
 
 # Cluster instance for write operations (primary)
@@ -41,9 +39,8 @@ resource "aws_docdb_cluster_instance" "spotify_docdb_writer" {
   apply_immediately  = false
 
   tags = {
-    Project     = var.project_name_tag
-    Terraform   = "true"
-    Environment = var.project_env_tag
+    Project   = var.project_name_tag
+    Terraform = "true"
   }
 }
 
@@ -55,9 +52,8 @@ resource "aws_docdb_cluster_instance" "spotify_docdb_reader" {
   apply_immediately  = false
 
   tags = {
-    Project     = var.project_name_tag
-    Terraform   = "true"
-    Environment = var.project_env_tag
+    Project   = var.project_name_tag
+    Terraform = "true"
   }
 }
 
@@ -67,6 +63,12 @@ resource "aws_docdb_cluster_instance" "spotify_docdb_reader" {
 
 data "aws_secretsmanager_secret_version" "docdb_password" {
   secret_id = aws_docdb_cluster.spotify_docdb.master_user_secret[0].secret_arn
+
+  depends_on = [
+    aws_docdb_cluster.spotify_docdb,
+    aws_docdb_cluster_instance.spotify_docdb_writer,
+    aws_docdb_cluster_instance.spotify_docdb_reader
+  ]
 }
 
 locals {
