@@ -3,9 +3,9 @@ resource "aws_cognito_user_pool" "spotify_cognito_user_pool" {
   auto_verified_attributes = ["email"]
   deletion_protection      = "INACTIVE" # To be set ACTIVE in production
   tags = {
-    Project     = "${var.project_name_tag}"
+    Project     = var.project_name_tag
     Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Environment = var.project_env_tag
   }
 
 }
@@ -51,7 +51,6 @@ resource "aws_cognito_identity_provider" "cognito_google_provider" {
   provider_type = "Google"
 
   provider_details = {
-    authorize_scopes = "email"
     client_id        = var.google_client_id
     client_secret    = var.google_client_secret
     authorize_scopes = "openid email profile"

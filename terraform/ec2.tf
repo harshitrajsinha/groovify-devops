@@ -47,9 +47,9 @@ resource "aws_key_pair" "spotify_appserver_key" {
   key_name   = "appserver-key"
   public_key = var.ssh_public_key
   tags = {
-    Project     = "${var.project_name_tag}"
+    Project     = var.project_name_tag
     Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Environment = var.project_env_tag
   }
 }
 
@@ -63,9 +63,9 @@ resource "aws_instance" "spotify_app_server" {
   user_data_base64            = base64encode(file("./app-server-user-data.sh"))
   vpc_security_group_ids      = [aws_security_group.spotify_appserver_sg.id]
   tags = {
-    Project     = "${var.project_name_tag}"
+    Project     = var.project_name_tag
     Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Environment = var.project_env_tag
   }
 
   depends_on = [
