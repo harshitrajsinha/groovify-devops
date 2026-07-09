@@ -10,7 +10,6 @@ on:
       - '.github/workflows/**' # to be removed in production
 permissions:
   contents: read
-  security-events: read  # Required to Trivy upload SARIF files to Security tab
 
 defaults:
   run:
@@ -23,6 +22,7 @@ jobs:
 
     permissions:
       contents: read
+      security-events: write  # Required to Trivy upload SARIF files to Security tab
 
     defaults:
       run:
@@ -81,7 +81,7 @@ jobs:
           scan-type: 'config'
           hide-progress: true
           format: 'sarif'
-          output: 'trivy-results.sarif'
+          output: 'trivy-results-terraform.sarif'
           exit-code: '1'
           severity: 'CRITICAL,HIGH'
 
@@ -89,6 +89,6 @@ jobs:
         if: always()
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: 'trivy-results-terraform.sarif'
 
 
