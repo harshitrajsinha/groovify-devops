@@ -44,11 +44,12 @@ jobs:
       # Install Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4
+        with:
+        terraform_version: "1.15.7"
 
       # Format Check
       - name: Terraform Format
         run: terraform fmt -check -recursive
-        continue-on-error: true
 
       # Init (backend disabled)
       - name: Terraform Init
@@ -57,7 +58,6 @@ jobs:
       # Syntax Validation
       - name: Terraform Validate
         run: terraform validate
-        continue-on-error: true
 
       # TF Lint
       - uses: terraform-linters/setup-tflint@v6
@@ -72,6 +72,5 @@ jobs:
 
       - name: Run TFLint
         run: tflint -f compact
-        continue-on-error: true
 
 

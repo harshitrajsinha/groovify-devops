@@ -43,9 +43,9 @@ resource "aws_security_group" "bastion_host_sg" {
   vpc_id      = module.vpc.vpc_id
 
   tags = {
-    Project     = "${var.project_name_tag}"
+    Project     = var.project_name_tag
     Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Environment = var.project_env_tag
   }
 
   egress {
@@ -68,9 +68,9 @@ resource "aws_key_pair" "spotify_bastion_key" {
   key_name   = "bastion-key"
   public_key = var.ssh_public_key
   tags = {
-    Project     = "${var.project_name_tag}"
+    Project     = var.project_name_tag
     Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Environment = var.project_env_tag
   }
 }
 
@@ -84,9 +84,9 @@ resource "aws_instance" "spotify_bastion" {
   user_data_base64       = base64encode(file("./bastion-user-data.sh"))
   vpc_security_group_ids = [aws_security_group.bastion_host_sg.id]
   tags = {
-    Project     = "${var.project_name_tag}"
+    Project     = var.project_name_tag
     Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Environment = var.project_env_tag
   }
 }
 

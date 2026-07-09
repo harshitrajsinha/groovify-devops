@@ -1,5 +1,6 @@
 module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "6.6.1"
 
   name = "spotify"
   cidr = var.vpc_cidr
@@ -15,9 +16,9 @@ module "vpc" {
   enable_vpn_gateway = false
 
   tags = {
-    Project     = "${var.project_name_tag}"
+    Project     = var.project_name_tag
     Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Environment = var.project_env_tag
   }
 }
 
@@ -34,9 +35,9 @@ resource "aws_security_group" "spotify_alb_sg" {
   vpc_id      = module.vpc.vpc_id
 
   tags = {
-    Project     = "${var.project_name_tag}"
+    Project     = var.project_name_tag
     Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Environment = var.project_env_tag
   }
 }
 
@@ -78,9 +79,9 @@ resource "aws_security_group" "spotify_appserver_sg" {
   vpc_id      = module.vpc.vpc_id
 
   tags = {
-    Project     = "${var.project_name_tag}"
+    Project     = var.project_name_tag
     Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Environment = var.project_env_tag
   }
 }
 

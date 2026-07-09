@@ -4,9 +4,9 @@ data "aws_acm_certificate" "spotify_domain_certificate" {
   statuses = ["ISSUED"]
 
   tags = {
-    Project     = "${var.project_name_tag}"
+    Project     = var.project_name_tag
     Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Environment = var.project_env_tag
   }
 }
 
@@ -32,9 +32,9 @@ resource "aws_lb_target_group" "spotify_appserver_tg" {
   }
 
   tags = {
-    Project     = "${var.project_name_tag}"
+    Project     = var.project_name_tag
     Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Environment = var.project_env_tag
   }
 
   depends_on = [aws_instance.spotify_app_server]
@@ -59,9 +59,9 @@ resource "aws_lb" "spotify_appserver_alb" {
   enable_deletion_protection = false # turn it true in production
 
   tags = {
-    Project     = "${var.project_name_tag}"
+    Project     = var.project_name_tag
     Terraform   = "true"
-    Environment = "${var.project_env_tag}"
+    Environment = var.project_env_tag
   }
 }
 
