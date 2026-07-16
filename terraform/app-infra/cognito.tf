@@ -1,5 +1,5 @@
-resource "aws_cognito_user_pool" "spotify_cognito_user_pool" {
-  name                     = "spotify-cognito-user-pool"
+resource "aws_cognito_user_pool" "groovify_cognito_user_pool" {
+  name                     = "groovify-cognito-user-pool"
   auto_verified_attributes = ["email"]
   deletion_protection      = "INACTIVE" # To be set ACTIVE in production
   tags = {
@@ -11,23 +11,23 @@ resource "aws_cognito_user_pool" "spotify_cognito_user_pool" {
 
 # ---------------------------------------------------
 
-resource "aws_cognito_user_pool_domain" "spotify_cognito_user_pool_domain" {
+resource "aws_cognito_user_pool_domain" "groovify_cognito_user_pool_domain" {
 
   domain          = var.cognito_domain
-  certificate_arn = data.aws_acm_certificate.spotify_domain_certificate.arn
-  user_pool_id    = aws_cognito_user_pool.spotify_cognito_user_pool.id
+  certificate_arn = data.aws_acm_certificate.groovify_domain_certificate.arn
+  user_pool_id    = aws_cognito_user_pool.groovify_cognito_user_pool.id
 }
 
 output "cognito_domain_cloudfront_distribution" {
-  value = aws_cognito_user_pool_domain.spotify_cognito_user_pool_domain.cloudfront_distribution # To be added to Domain provider as CNAME
+  value = aws_cognito_user_pool_domain.groovify_cognito_user_pool_domain.cloudfront_distribution # To be added to Domain provider as CNAME
 }
 
 # ---------------------------------------------------
 
-resource "aws_cognito_user_pool_client" "spotify_cognito_user_pool_client" {
-  name = "spotify-cognito-user-pool-client"
+resource "aws_cognito_user_pool_client" "groovify_cognito_user_pool_client" {
+  name = "groovify-cognito-user-pool-client"
 
-  user_pool_id                         = aws_cognito_user_pool.spotify_cognito_user_pool.id
+  user_pool_id                         = aws_cognito_user_pool.groovify_cognito_user_pool.id
   generate_secret                      = true
   callback_urls                        = ["https://${var.my_domain_name}/auth-callback", "http://localhost/auth-callback"]
   logout_urls                          = ["https://${var.my_domain_name}", "http://localhost"]
@@ -44,7 +44,7 @@ resource "aws_cognito_user_pool_client" "spotify_cognito_user_pool_client" {
 resource "aws_cognito_identity_provider" "cognito_google_provider" {
 
   count         = var.google_client_id != "null" && var.google_client_secret != "null" ? 1 : 0
-  user_pool_id  = aws_cognito_user_pool.spotify_cognito_user_pool.id
+  user_pool_id  = aws_cognito_user_pool.groovify_cognito_user_pool.id
   provider_name = "Google"
   provider_type = "Google"
 

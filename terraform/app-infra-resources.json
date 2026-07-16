@@ -1,6 +1,6 @@
 {
   "ACM": [
-    "data.aws_acm_certificate.spotify_domain_certificate"
+    "data.aws_acm_certificate.groovify_domain_certificate"
   ],
   "AMI": [
     "data.aws_ami.ubuntu"
@@ -20,38 +20,38 @@
   ],
   "Cognito": [
     "aws_cognito_identity_provider.cognito_google_provider[0]",
-    "aws_cognito_user_pool.spotify_cognito_user_pool",
-    "aws_cognito_user_pool_client.spotify_cognito_user_pool_client",
-    "aws_cognito_user_pool_domain.spotify_cognito_user_pool_domain"
+    "aws_cognito_user_pool.groovify_cognito_user_pool",
+    "aws_cognito_user_pool_client.groovify_cognito_user_pool_client",
+    "aws_cognito_user_pool_domain.groovify_cognito_user_pool_domain"
   ],
   "DocumentDB": [
-    "aws_docdb_cluster.spotify_docdb",
-    "aws_docdb_cluster_instance.spotify_docdb_reader",
-    "aws_docdb_cluster_instance.spotify_docdb_writer",
-    "aws_docdb_subnet_group.spotify_docdb_subnet_grp"
+    "aws_docdb_cluster.groovify_docdb",
+    "aws_docdb_cluster_instance.groovify_docdb_reader",
+    "aws_docdb_cluster_instance.groovify_docdb_writer",
+    "aws_docdb_subnet_group.groovify_docdb_subnet_grp"
   ],
   "EC2": [
-    "aws_instance.spotify_app_server"
+    "aws_instance.groovify_app_server"
   ],
   "Elastic Load Balancing": [
-    "aws_lb.spotify_appserver_alb",
-    "aws_lb_listener.spotify_appserver_alb_listener_443",
-    "aws_lb_listener.spotify_appserver_alb_listener_80",
-    "aws_lb_target_group.spotify_appserver_tg",
-    "aws_lb_target_group_attachment.spotify_appserver_frontend_tg_attn"
+    "aws_lb.groovify_appserver_alb",
+    "aws_lb_listener.groovify_appserver_alb_listener_443",
+    "aws_lb_listener.groovify_appserver_alb_listener_80",
+    "aws_lb_target_group.groovify_appserver_tg",
+    "aws_lb_target_group_attachment.groovify_appserver_frontend_tg_attn"
   ],
   "S3": [
-    "aws_s3_bucket.spotify_app_s3",
-    "aws_s3_bucket_cors_configuration.spotify_app_s3_bucket_cors",
-    "aws_s3_bucket_ownership_controls.spotify_app_s3_bucket_ownership",
-    "aws_s3_bucket_public_access_block.spotify_app_s3_bucket_public_access",
-    "aws_s3_bucket_server_side_encryption_configuration.spotify_app_s3_bucket_encrypt",
-    "aws_s3_bucket_versioning.spotify_app_s3_bucket_versioning"
+    "aws_s3_bucket.groovify_app_s3",
+    "aws_s3_bucket_cors_configuration.groovify_app_s3_bucket_cors",
+    "aws_s3_bucket_ownership_controls.groovify_app_s3_bucket_ownership",
+    "aws_s3_bucket_public_access_block.groovify_app_s3_bucket_public_access",
+    "aws_s3_bucket_server_side_encryption_configuration.groovify_app_s3_bucket_encrypt",
+    "aws_s3_bucket_versioning.groovify_app_s3_bucket_versioning"
   ],
   "EC2 Security Groups": [
-    "aws_security_group.spotify_alb_sg",
-    "aws_security_group.spotify_appserver_sg",
-    "aws_security_group.spotify_docdb_sg",
+    "aws_security_group.groovify_alb_sg",
+    "aws_security_group.groovify_appserver_sg",
+    "aws_security_group.groovify_docdb_sg",
     "aws_security_group.vpce",
     "aws_security_group_rule.sg_rule_alb_egress_80",
     "aws_security_group_rule.sg_rule_alb_ingress_http",
@@ -65,7 +65,7 @@
     "aws_ssm_parameter.cognito_clientsec",
     "aws_ssm_parameter.cognito_userpoolid",
     "aws_ssm_parameter.docdb_connection_string",
-    "aws_ssm_parameter.s3_bucket_spotify",
+    "aws_ssm_parameter.s3_bucket_groovify",
     "aws_ssm_parameter.vite_cognito_clientid"
   ],
   "VPC": [

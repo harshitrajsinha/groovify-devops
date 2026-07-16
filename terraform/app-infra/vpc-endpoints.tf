@@ -10,7 +10,7 @@ resource "aws_security_group" "vpce" {
     to_port     = 443
 
     security_groups = [
-      aws_security_group.spotify_appserver_sg.id
+      aws_security_group.groovify_appserver_sg.id
     ]
   }
 
@@ -96,4 +96,6 @@ resource "aws_vpc_endpoint" "kms" {
   security_group_ids = [aws_security_group.vpce.id]
 
   private_dns_enabled = true
+
+  tags 
 }

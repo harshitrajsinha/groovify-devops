@@ -223,12 +223,12 @@ data "aws_ami" "ubuntu" {
 }
 
 # Create bastion host (EC2) - will connect using SSM agent
-resource "aws_instance" "spotify_bastion" {
+resource "aws_instance" "groovify_bastion" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.bastion_instance_type
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.terraform_bastion_profile.name
-  subnet_id                   = aws_subnet.public_subnet_spotify_project_bastion.id
+  subnet_id                   = aws_subnet.public_subnet_groovify_project_bastion.id
   user_data_base64            = base64encode(file("./bastion-user-data.sh"))
   vpc_security_group_ids      = [aws_security_group.bastion_host_sg.id]
   tags = {
@@ -247,9 +247,9 @@ resource "aws_instance" "spotify_bastion" {
 }
 
 output "bastion_public_ip" {
-  value = aws_instance.spotify_bastion.public_ip
+  value = aws_instance.groovify_bastion.public_ip
 }
 
 output "bastion_instance_id" {
-  value = aws_instance.spotify_bastion.id
+  value = aws_instance.groovify_bastion.id
 }

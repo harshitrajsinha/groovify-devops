@@ -21,13 +21,13 @@
     "aws_iam_role_policy_attachment.vpc_access"
   ],
   "EC2": [
-    "aws_instance.spotify_bastion"
+    "aws_instance.groovify_bastion"
   ],
   "VPC": [
-    "aws_vpc.vpc_spotify_project_bastion",
-    "aws_subnet.public_subnet_spotify_project_bastion",
-    "aws_internet_gateway.igw_spotify_project_bastion",
-    "aws_route_table.public_rt_spotify_project_bastion",
+    "aws_vpc.vpc_groovify_project_bastion",
+    "aws_subnet.public_subnet_groovify_project_bastion",
+    "aws_internet_gateway.igw_groovify_project_bastion",
+    "aws_route_table.public_rt_groovify_project_bastion",
     "aws_route_table_association.public_rt_assn",
     "aws_security_group.bastion_host_sg"
   ],

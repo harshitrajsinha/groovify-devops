@@ -131,7 +131,7 @@ jobs:
       contents: read
     
     env:
-      IMAGE_NAME: harshitrajsinha/spotify-backend
+      IMAGE_NAME: harshitrajsinha/groovify-backend
       IMAGE_TAG: ${{ github.sha }}
 
     steps:
@@ -231,7 +231,7 @@ jobs:
       contents: write
     
     env:
-      IMAGE_NAME: harshitrajsinha/spotify-backend
+      IMAGE_NAME: harshitrajsinha/groovify-backend
       IMAGE_TAG: ${{ github.sha }}
 
     steps:

@@ -22,10 +22,10 @@ fi
 
 # Clone project repository
 cd /home/ubuntu
-if [ ! -d "spotify-clone-devops" ]; then
-    git clone https://github.com/harshitrajsinha/spotify-clone-devops.git
+if [ ! -d "groovify-devops" ]; then
+    git clone https://github.com/harshitrajsinha/groovify-devops.git
 fi
-sudo chown -R ubuntu:ubuntu spotify-clone-devops
+sudo chown -R ubuntu:ubuntu groovify-devops
 
 ##############################################################
 # Install node
@@ -88,7 +88,7 @@ fi
 ##############################################################
 # Create .env file in backend and frontend by fetching values from AWS SSM parameter store
 AWS_REGION="us-east-1"
-PROJECT_DIR="/home/ubuntu/spotify-clone-devops" # IN user-data, $USER corresponds to root, hence hard-coding user name
+PROJECT_DIR="/home/ubuntu/groovify-devops" # IN user-data, $USER corresponds to root, hence hard-coding user name
 
 if ! command -v aws >/dev/null 2>&1; then
     sudo apt-get install -y unzip
@@ -101,7 +101,7 @@ BACKEND_ENV_FILE="${PROJECT_DIR}/backend/.env"
 > "$BACKEND_ENV_FILE" # Truncate or create file
 
 for name in PORT MONGODB_URI ADMIN_EMAIL NODE_ENV S3_BUCKET_NAME AWS_REGION FRONTEND_URL COGNITO_DOMAIN COGNITO_CLIENT_ID COGNITO_CLIENT_SECRET COGNITO_REDIRECT_URI COGNITO_USER_POOL_ID; do
-    value=$(aws ssm get-parameter --name "/spotify/$name" --with-decryption --query "Parameter.Value" --output text --region "$AWS_REGION")
+    value=$(aws ssm get-parameter --name "/groovify/$name" --with-decryption --query "Parameter.Value" --output text --region "$AWS_REGION")
     echo "${name}=${value}" >> "$BACKEND_ENV_FILE"
 done
 
@@ -112,7 +112,7 @@ FRONTEND_ENV_FILE="${PROJECT_DIR}/frontend/.env"
 > "$FRONTEND_ENV_FILE"
 
 for name in VITE_BACKEND_URL VITE_COGNITO_DOMAIN VITE_COGNITO_CLIENT_ID; do
-    value=$(aws ssm get-parameter --name "/spotify/$name" --with-decryption --query "Parameter.Value" --output text --region "$AWS_REGION")
+    value=$(aws ssm get-parameter --name "/groovify/$name" --with-decryption --query "Parameter.Value" --output text --region "$AWS_REGION")
     echo "${name}=${value}" >> "$FRONTEND_ENV_FILE"
 done
 

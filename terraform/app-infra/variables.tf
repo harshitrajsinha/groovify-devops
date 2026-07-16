@@ -7,7 +7,7 @@ variable "region" {
 variable "project_name_tag" {
   description = "Name of the project for which infrastructure is being provisioned"
   type        = string
-  default     = "spotify-project"
+  default     = "groovify-project"
 }
 
 variable "project_env" {
@@ -48,7 +48,7 @@ variable "intra_subnet_cidr" {
 variable "bastion_host_sg_name" {
   deprecated = "name of the bastion host security group that will be imported for reference"
   type       = string
-  default    = "spotify-sg-bastion"
+  default    = "groovify-sg-bastion"
 }
 
 variable "custom_dev_ubuntu_ami_id" {
@@ -70,7 +70,7 @@ variable "appserver_instance_type" {
 variable "ssm_parameter_store_generic_arn" {
   description = "ARN with wildcard that includes all the parameters store on SSM parameter store"
   type        = string
-  default     = "arn:aws:ssm:us-east-1:211125424910:parameter/spotify/*"
+  default     = "arn:aws:ssm:us-east-1:211125424910:parameter/groovify/*"
 }
 
 variable "alb_listener_ssl_policy" {
@@ -91,10 +91,10 @@ variable "cognito_domain" {
   default     = "auth.harshitrajsinha.fun"
 }
 
-variable "s3_bucket_name_spotify" {
-  description = "S3 bucket name for spotify app"
+variable "s3_bucket_name_groovify" {
+  description = "S3 bucket name for groovify app"
   type        = string
-  default     = "spotify-app-object-store"
+  default     = "groovify-app-object-store"
 }
 
 variable "docdb_master_username" {
@@ -106,13 +106,13 @@ variable "docdb_master_username" {
 variable "remote_backend_bucket_name" {
   description = "S3 bucket name to store terraform state file"
   type        = string
-  default     = "spotify-project-terraform-state"
+  default     = "groovify-project-terraform-state"
 }
 
 variable "remote_backend_bucket_key" {
   description = "S3 bucket key for remote backend"
   type        = string
-  default     = "spotify/terraform.tfstate"
+  default     = "groovify/terraform.tfstate"
 }
 
 #################################

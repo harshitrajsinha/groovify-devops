@@ -61,7 +61,7 @@ VITE_COGNITO_CLIENT_ID=
 3. Run docker build command from root directory of project
 
 ```bash
-docker build --secret id=spotify-frontend-env,src=frontend/.env -t harshitrajsinha/frontend:v1 -f docker/Dockerfile.frontend .
+docker build --secret id=groovify-frontend-env,src=frontend/.env -t harshitrajsinha/frontend:v1 -f docker/Dockerfile.frontend .
 ```
 
 4. Run docker run command from root directory of project

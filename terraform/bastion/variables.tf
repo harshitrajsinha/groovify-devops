@@ -1,7 +1,7 @@
 variable "project_tag" {
   description = "Project name for which these resources are created"
   type        = string
-  default     = "spotify-project-bastion"
+  default     = "groovify-project-bastion"
 }
 
 variable "region" {
@@ -37,5 +37,5 @@ variable "bastion_instance_type" {
 variable "bucket_name" {
   description = "bucket name that will store app infra state file"
   type        = string
-  default     = "spotify-project-remote-storage"
+  default     = "groovify-project-remote-storage"
 }

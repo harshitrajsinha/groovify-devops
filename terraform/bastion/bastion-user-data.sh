@@ -28,10 +28,10 @@ fi
 
 # Clone project repository that contains terraform code to be provisioned by bastion host
 cd /home/ubuntu
-if [ ! -d "spotify-clone-devops" ]; then
-    git clone https://github.com/harshitrajsinha/spotify-clone-devops.git
+if [ ! -d "groovify-devops" ]; then
+    git clone https://github.com/harshitrajsinha/groovify-devops.git
 fi
-sudo chown -R ubuntu:ubuntu spotify-clone-devops
+sudo chown -R ubuntu:ubuntu groovify-devops
 
 # Download AWS DocumentDB / RDS global CA bundle (required to access documentdb)
 if [ ! -f /opt/certs/global-bundle.pem ]; then

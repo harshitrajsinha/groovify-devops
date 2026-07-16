@@ -2,7 +2,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "6.6.1"
 
-  name = "spotify-project"
+  name = "groovify-project"
   cidr = var.vpc_cidr
 
   azs                     = var.infra_azs
@@ -28,8 +28,8 @@ module "vpc" {
 
 ### Security group for ALB
 
-resource "aws_security_group" "spotify_alb_sg" {
-  name        = "spotify-alb-sg"
+resource "aws_security_group" "groovify_alb_sg" {
+  name        = "groovify-alb-sg"
   description = "Allow HTTP and HTTPS inbound, and all outbound traffic"
   vpc_id      = module.vpc.vpc_id
 
@@ -46,7 +46,7 @@ resource "aws_security_group_rule" "sg_rule_alb_ingress_http" {
   protocol          = "tcp"
   description       = "For HTTP inbound traffic"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.spotify_alb_sg.id
+  security_group_id = aws_security_group.groovify_alb_sg.id
 }
 
 resource "aws_security_group_rule" "sg_rule_alb_ingress_https" {
@@ -56,7 +56,7 @@ resource "aws_security_group_rule" "sg_rule_alb_ingress_https" {
   protocol          = "tcp"
   description       = "For HTTPS inbound traffic"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.spotify_alb_sg.id
+  security_group_id = aws_security_group.groovify_alb_sg.id
 }
 
 resource "aws_security_group_rule" "sg_rule_alb_egress_80" {
@@ -65,14 +65,14 @@ resource "aws_security_group_rule" "sg_rule_alb_egress_80" {
   to_port                  = 80
   protocol                 = "tcp"
   description              = "Forward request to Traefik reverse proxy on port 80"
-  source_security_group_id = aws_security_group.spotify_appserver_sg.id
-  security_group_id        = aws_security_group.spotify_alb_sg.id
+  source_security_group_id = aws_security_group.groovify_appserver_sg.id
+  security_group_id        = aws_security_group.groovify_alb_sg.id
 }
 
 ### Security group for App server
 
-resource "aws_security_group" "spotify_appserver_sg" {
-  name        = "spotify-appserver-sg"
+resource "aws_security_group" "groovify_appserver_sg" {
+  name        = "groovify-appserver-sg"
   description = "Allow inbound traffic from alb on 80 + SSH, and all outbound traffic for updates"
   vpc_id      = module.vpc.vpc_id
 
@@ -89,8 +89,8 @@ resource "aws_security_group_rule" "sg_rule_appserver_ingress_80" {
   to_port                  = 80
   protocol                 = "tcp"
   description              = "Traffic on 80 for Traefik reverse proxy from ALB SG"
-  source_security_group_id = aws_security_group.spotify_alb_sg.id
-  security_group_id        = aws_security_group.spotify_appserver_sg.id
+  source_security_group_id = aws_security_group.groovify_alb_sg.id
+  security_group_id        = aws_security_group.groovify_appserver_sg.id
 }
 
 ### NOTE: There is not ingress rule to connect to app server, the only way (if needed) is to connect through app server's private IP, by creating "Instance connect" VPC Endpoint, via AWS Console
@@ -103,13 +103,13 @@ resource "aws_security_group_rule" "sg_rule_appserver_egress" {
   protocol          = "-1"
   description       = "Outbound to internet"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.spotify_appserver_sg.id
+  security_group_id = aws_security_group.groovify_appserver_sg.id
 }
 
 
 ### Security group for DocumentDB
-resource "aws_security_group" "spotify_docdb_sg" {
-  name        = "spotify-docdb-sg"
+resource "aws_security_group" "groovify_docdb_sg" {
+  name        = "groovify-docdb-sg"
   description = "Allow inbound traffic from appserver and bastion host on port 27017"
   vpc_id      = module.vpc.vpc_id
 
@@ -126,8 +126,8 @@ resource "aws_security_group_rule" "sg_rule_docdb_ingress_appserver" {
   to_port                  = 27017
   protocol                 = "tcp"
   description              = "Inbound from app server"
-  security_group_id        = aws_security_group.spotify_docdb_sg.id
-  source_security_group_id = aws_security_group.spotify_appserver_sg.id
+  security_group_id        = aws_security_group.groovifyy_docdb_sg.id
+  source_security_group_id = aws_security_group.groovify_appserver_sg.id
 }
 
 ## Note: The only way to connect to documentdb to view records and documents (using mongosh) is through app server, as it is the only ingres rule docdb security group will accept

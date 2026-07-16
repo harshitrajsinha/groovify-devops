@@ -40,7 +40,7 @@ resource "aws_iam_role_policy" "attach_perm_ssm_read" {
 data "aws_iam_policy_document" "permission_to_access_s3_bucket" {
   statement {
     actions   = ["s3:GetObject", "s3:PutObject"]
-    resources = ["${aws_s3_bucket.spotify_app_s3.arn}/*"]
+    resources = ["${aws_s3_bucket.groovify_app_s3.arn}/*"]
   }
 }
 resource "aws_iam_role_policy" "attach_perm_s3_bucket_access" {
@@ -78,14 +78,14 @@ data "aws_ami" "ubuntu" {
 }
 
 # Will connect using SSM agent
-resource "aws_instance" "spotify_app_server" {
+resource "aws_instance" "groovify_app_server" {
   ami                         = var.project_env == "production" ? data.aws_ami.ubuntu.id : var.custom_dev_ubuntu_ami_id
   instance_type               = var.appserver_instance_type
   associate_public_ip_address = false
   iam_instance_profile        = aws_iam_instance_profile.appserver_instance_profile.name
   subnet_id                   = element(module.vpc.private_subnets, 0)
   user_data_base64            = var.project_env == "production" ? base64encode(file("./app-server-user-data.sh")) : base64encode(file("./devapp-server-user-data.sh"))
-  vpc_security_group_ids      = [aws_security_group.spotify_appserver_sg.id]
+  vpc_security_group_ids      = [aws_security_group.groovify_appserver_sg.id]
   tags = {
     Project   = var.project_name_tag
     Terraform = "true"
@@ -111,9 +111,9 @@ resource "aws_instance" "spotify_app_server" {
 }
 
 output "app_server_private_ip" {
-  value = aws_instance.spotify_app_server.private_ip
+  value = aws_instance.groovify_app_server.private_ip
 }
 
 output "app_server_instance_id" {
-  value = aws_instance.spotify_app_server.id
+  value = aws_instance.groovify_app_server.id
 }

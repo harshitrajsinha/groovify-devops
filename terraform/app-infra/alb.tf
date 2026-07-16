@@ -1,5 +1,5 @@
 # ACM for custom domain
-data "aws_acm_certificate" "spotify_domain_certificate" {
+data "aws_acm_certificate" "groovify_domain_certificate" {
   domain   = var.my_domain_name
   statuses = ["ISSUED"]
 
@@ -12,8 +12,8 @@ data "aws_acm_certificate" "spotify_domain_certificate" {
 # ---------------------------------------------------------------------------------
 
 # Target group for Traefik single endpoint
-resource "aws_lb_target_group" "spotify_appserver_tg" {
-  name        = "spotify-appserver-tg"
+resource "aws_lb_target_group" "groovify_appserver_tg" {
+  name        = "groovify-appserver-tg"
   target_type = "instance"
   port        = 80
   protocol    = "HTTP"
@@ -35,24 +35,24 @@ resource "aws_lb_target_group" "spotify_appserver_tg" {
     Terraform = "true"
   }
 
-  depends_on = [aws_instance.spotify_app_server]
+  depends_on = [aws_instance.groovify_app_server]
 }
 
 
-resource "aws_lb_target_group_attachment" "spotify_appserver_frontend_tg_attn" {
-  target_group_arn = aws_lb_target_group.spotify_appserver_tg.arn
-  target_id        = aws_instance.spotify_app_server.id
+resource "aws_lb_target_group_attachment" "groovify_appserver_frontend_tg_attn" {
+  target_group_arn = aws_lb_target_group.groovify_appserver_tg.arn
+  target_id        = aws_instance.groovify_app_server.id
   port             = 80
 }
 
 # Application load balancer configuration
 
-resource "aws_lb" "spotify_appserver_alb" {
-  name                       = "spotify-appserver-alb"
+resource "aws_lb" "groovify_appserver_alb" {
+  name                       = "groovify-appserver-alb"
   drop_invalid_header_fields = true
   internal                   = false
   load_balancer_type         = "application"
-  security_groups            = [aws_security_group.spotify_alb_sg.id]
+  security_groups            = [aws_security_group.groovify_alb_sg.id]
   subnets                    = module.vpc.public_subnets
 
   enable_deletion_protection = false # turn it true in production
@@ -64,18 +64,18 @@ resource "aws_lb" "spotify_appserver_alb" {
 }
 
 output "alb_dns" {
-  value = aws_lb.spotify_appserver_alb.dns_name
+  value = aws_lb.groovify_appserver_alb.dns_name
 }
 
 
-resource "aws_lb_listener" "spotify_appserver_alb_listener_80" {
-  load_balancer_arn = aws_lb.spotify_appserver_alb.arn
+resource "aws_lb_listener" "groovify_appserver_alb_listener_80" {
+  load_balancer_arn = aws_lb.groovify_appserver_alb.arn
   port              = 80
   protocol          = "HTTP"
 
   # default_action {
   #   type             = "forward"
-  #   target_group_arn = aws_lb_target_group.spotify_appserver_tg.arn
+  #   target_group_arn = aws_lb_target_group.groovify_appserver_tg.arn
   # }
 
   default_action {
@@ -90,16 +90,16 @@ resource "aws_lb_listener" "spotify_appserver_alb_listener_80" {
 }
 
 
-resource "aws_lb_listener" "spotify_appserver_alb_listener_443" {
+resource "aws_lb_listener" "groovify_appserver_alb_listener_443" {
 
-  load_balancer_arn = aws_lb.spotify_appserver_alb.arn
+  load_balancer_arn = aws_lb.groovify_appserver_alb.arn
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = var.alb_listener_ssl_policy
-  certificate_arn   = data.aws_acm_certificate.spotify_domain_certificate.arn
+  certificate_arn   = data.aws_acm_certificate.groovify_domain_certificate.arn
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.spotify_appserver_tg.arn
+    target_group_arn = aws_lb_target_group.groovify_appserver_tg.arn
   }
 }

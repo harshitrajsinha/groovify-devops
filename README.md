@@ -44,8 +44,8 @@ This project is forked from [burakorkmez/realtime-spotify-clone](https://github.
 **Cloning the Repository**
 
 ```bash
-git clone https://github.com/harshitrajsinha/spotify-clone-devops.git
-cd spotify-clone-devops
+git clone https://github.com/harshitrajsinha/groovify-devops.git
+cd groovify-devops
 ```
 
 **Set Up Environment Variables**
@@ -128,7 +128,7 @@ A successful CI pipeline is built that runs when code changes are pushed for fro
 ### 🏗️ Terraform (Infrastructure as Code)
 
 The application infrastructure consists of total of 84 terraform resources that are created from 12 different AWS services that facilitates the flow of request between client, DevOps engineer and application server, along with other AWS resources that integrates with the application like database, object storage etc. A list of which could be found in the following link - 
-[https://raw.githubusercontent.com/harshitrajsinha/spotify-clone-devops/refs/heads/main/terraform/app-infra-resources.json](https://raw.githubusercontent.com/harshitrajsinha/spotify-clone-devops/refs/heads/main/terraform/app-infra-resources.json)
+[https://raw.githubusercontent.com/harshitrajsinha/groovify-devops/refs/heads/main/terraform/app-infra-resources.json](https://raw.githubusercontent.com/harshitrajsinha/groovify-devops/refs/heads/main/terraform/app-infra-resources.json)
 
 Terraform CI pipeline: CI pipeline for terraform ensures that any new commit on terraform resources code must go through security check, syntax check, vulnerability scan before being merged.
 

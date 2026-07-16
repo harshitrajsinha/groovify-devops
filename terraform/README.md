@@ -9,16 +9,16 @@
 2. Is MONGODB_URI value in .env of backend correctly url-encoded as per password stored in secrets manager? 
 
 3. The following parameters needs to be already present in AWS System manager Parameter store (as they are static values) -
-- `/spotify/ADMIN_EMAIL`
-- `/spotify/COGNITO_DOMAIN`
-- `/spotify/COGNITO_REDIRECT_URI`
-- `/spotify/FRONTEND_URL`
-- `/spotify/NODE_ENV`
-- `/spotify/PORT`
-- `/spotify/VITE_BACKEND_URL`
-- `/spotify/VITE_COGNITO_DOMAIN`
-- `/spotify/VITE_MODE`
-- `/spotify/AWS_REGION`
+- `/groovify/ADMIN_EMAIL`
+- `/groovify/COGNITO_DOMAIN`
+- `/groovify/COGNITO_REDIRECT_URI`
+- `/groovify/FRONTEND_URL`
+- `/groovify/NODE_ENV`
+- `/groovify/PORT`
+- `/groovify/VITE_BACKEND_URL`
+- `/groovify/VITE_COGNITO_DOMAIN`
+- `/groovify/VITE_MODE`
+- `/groovify/AWS_REGION`
 
 4. Ensure that VPC, IGW, security groups, key pairs etc. have not reached creation limit.
 

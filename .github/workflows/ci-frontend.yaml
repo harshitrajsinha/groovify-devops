@@ -131,7 +131,7 @@ jobs:
       contents: read
     
     env:
-      IMAGE_NAME: harshitrajsinha/spotify-frontend
+      IMAGE_NAME: harshitrajsinha/groovify-frontend
       IMAGE_TAG: ${{ github.sha }}
 
     steps:
@@ -157,6 +157,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
 
       ## Build docker image (only)
       - name: Build and push Docker images
@@ -164,6 +170,11 @@ jobs:
         with:
           context: .
           file: docker/Dockerfile.frontend
+          secrets: |
+            "VITE_BACKEND_URL=${{ secrets.GITHUB_TOKEN }}"
+            "VITE_MODE=${{ secrets.GITHUB_TOKEN }}"
+            "VITE_COGNITO_DOMAIN=${{ secrets.GITHUB_TOKEN }}"
+            "VITE_COGNITO_CLIENT_ID=${{ secrets.GITHUB_TOKEN }}"
           push: false
           load: true
           tags: ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
@@ -231,7 +242,7 @@ jobs:
       contents: write
     
     env:
-      IMAGE_NAME: harshitrajsinha/spotify-frontend
+      IMAGE_NAME: harshitrajsinha/groovify-frontend
       IMAGE_TAG: ${{ github.sha }}
 
     steps:
