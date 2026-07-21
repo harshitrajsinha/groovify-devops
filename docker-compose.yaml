@@ -49,13 +49,13 @@ services:
       - "com.docker.compose.service=backend"
   
   frontend:
-    build:              # If running locally
-      context: .
-      dockerfile: docker/Dockerfile.frontend
-      secrets:
-        - groovify-frontend-env
-    image: groovify-frontend:local
-    # image: harshitrajsinha/groovify-frontend:bae27391fad8f995bdf6b01f676b631e94a78072
+    # build:              # If running locally
+    #   context: .
+    #   dockerfile: docker/Dockerfile.frontend
+    #   secrets:
+    #     - groovify-frontend-env
+    # image: groovify-frontend:local
+    image: harshitrajsinha/groovify-frontend:bae27391fad8f995bdf6b01f676b631e94a78072
     expose:
       - "80"
     networks:
