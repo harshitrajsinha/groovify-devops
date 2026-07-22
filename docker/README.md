@@ -41,7 +41,7 @@ docker run -p 8000:8000 --env-file ./backend/.env harshitrajsinha/backend:v1
 
 ### Building and running frontend container
 
-1. Setup .env in frontend/ directory (refer .env.sample)
+1. Setup config.js in frontend/ directory (refer .env.sample)
 ```env
 VITE_BACKEND_URL=http://localhost:8000
 VITE_MODE=development

@@ -51,7 +51,7 @@ jobs:
       ### Dependency scan:
 
       - name: Dependency scan
-        if: github.ref == 'refs/heads/test'
+        # if: github.ref == 'refs/heads/dev'
         uses: oke-py/npm-audit-action@v4.0.2
         with:
           audit_level: high
@@ -65,7 +65,7 @@ jobs:
       ## File system scan (frontend service):
       
       - name: Scan file system
-        if: github.ref == 'refs/heads/test'
+        if: github.ref == 'refs/heads/main'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: 'fs'
@@ -78,7 +78,7 @@ jobs:
       ### SBOM generation:
       # Note -> Here we are generating dependency graph directly to GitHub insights rather than separate artifact
       - name: SBOM generation
-        if: github.ref == 'refs/heads/test'
+        if: github.ref == 'refs/heads/main'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: 'fs'
@@ -159,22 +159,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
-      - name: Create frontend .env
-        run: |
-          cat > frontend.env <<EOF
-          VITE_BACKEND_URL=${{ secrets.ENV_VITE_BACKEND_URL }}
-          VITE_MODE=${{ vars.ENV_VITE_MODE }}
-          VITE_COGNITO_DOMAIN=${{ secrets.ENV_VITE_COGNITO_DOMAIN }}
-          EOF
-
       ## Build docker image (only)
       - name: Build and push Docker images
         uses: docker/build-push-action@v7.2.0
         with:
           context: .
           file: docker/Dockerfile.frontend
-          secrets: |
-            id=groovify-frontend-env,src=frontend.env
           push: false
           load: true
           tags: ${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
@@ -201,7 +191,7 @@ jobs:
 
       ## Scan docker image using trivy
       - name: Docker image scan using Trivy
-        if: github.ref == 'refs/heads/test'
+        if: github.ref == 'refs/heads/main'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
@@ -213,7 +203,7 @@ jobs:
       # SBOM generation
       # Note -> Here we are generating separate artifact for SBOM rather than for GitHub insights
       - name: Generate SBOM for docker image
-        if: github.ref == 'refs/heads/test'
+        if: github.ref == 'refs/heads/main'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
@@ -270,7 +260,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docker-compose.yaml
-          git commit -m "Update backend image to $IMAGE_TAG" || echo "No changes"
+          git commit -m "Update frontend image to $IMAGE_TAG" || echo "No changes"
           git pull --rebase origin "$GITHUB_REF_NAME"
 
           git push

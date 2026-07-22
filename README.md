@@ -73,7 +73,8 @@ COGNITO_REDIRECT_URI=
 COGNITO_USER_POOL_ID=
 ```
 
-#### Setup .env file in _frontend_ folder
+#### Setup config.js file in _frontend_ folder 
+* config.js is used over env to provide env vars at build time. The vars are not secret hence can be exposed through config file.
 
 ```env
 VITE_BACKEND_URL=http://localhost # (Traefik reverse proxy endpoint)
@@ -107,8 +108,7 @@ The backend and frontend services have been successfully containerized using a m
 
 #### Learnings:
 
-1. Secured frontend Docker image build-time environment variables using Build Secrets.<br/><br/>
-2. Improved the build time by combining copying and changing file ownership into single command (this could have significant impact depending on number of application files)
+* Improved the build time by combining copying and changing file ownership into single command (this could have significant impact depending on number of application files)
 <br/><br/>
 <hr>
 

@@ -111,7 +111,7 @@ chmod 600 "$BACKEND_ENV_FILE"
 FRONTEND_ENV_FILE="${PROJECT_DIR}/frontend/.env"
 > "$FRONTEND_ENV_FILE"
 
-for name in VITE_BACKEND_URL VITE_COGNITO_DOMAIN VITE_COGNITO_CLIENT_ID; do
+for name in VITE_BACKEND_URL VITE_MODE VITE_COGNITO_DOMAIN VITE_COGNITO_CLIENT_ID; do
     value=$(aws ssm get-parameter --name "/groovify/$name" --with-decryption --query "Parameter.Value" --output text --region "$AWS_REGION")
     echo "${name}=${value}" >> "$FRONTEND_ENV_FILE"
 done
@@ -123,7 +123,7 @@ chmod 600 "$FRONTEND_ENV_FILE"
 
 CONFIG_FILE="${PROJECT_DIR}/frontend/config.js"
 
-for name in VITE_COGNITO_CLIENT_ID; do
+for name in VITE_BACKEND_URL VITE_MODE VITE_COGNITO_DOMAIN VITE_COGNITO_CLIENT_ID; do
     value=$(aws ssm get-parameter \
         --name "/groovify/$name" \
         --with-decryption \

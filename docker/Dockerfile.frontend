@@ -11,8 +11,9 @@ RUN npm ci
 
 COPY ./frontend/ .
 
-RUN --mount=type=secret,id=groovify-frontend-env,target=/app/.env \
-    npm run build
+# Adding env vars at build time using config.js
+
+RUN npm run build
 
 # Final stage
 

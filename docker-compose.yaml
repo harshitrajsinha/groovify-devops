@@ -22,7 +22,7 @@ services:
     #   context: .
     #   dockerfile: docker/Dockerfile.backend
     # image: backend-image:latest         # Pull from DockerHub
-    image: harshitrajsinha/groovify-backend:90332252c774ed2aebf15bb5945b1496d6b13e9f
+    image: harshitrajsinha/groovify-backend:dc4aa0fd43232fdaa1bb7de965a7396820b59d9e
     # Not to specify container_name and ports as they will create conflicts during scale up.
     expose:
       - "8000"
@@ -52,10 +52,8 @@ services:
     # build:              # If running locally
     #   context: .
     #   dockerfile: docker/Dockerfile.frontend
-    #   secrets:
-    #     - groovify-frontend-env
     # image: groovify-frontend:local
-    image: harshitrajsinha/groovify-frontend:bae27391fad8f995bdf6b01f676b631e94a78072
+    image: harshitrajsinha/groovify-frontend:13b7db1f10f6b5dd00ad55e75f557dcd3cbefec3
     expose:
       - "80"
     networks:
@@ -82,6 +80,3 @@ services:
 networks:
   traefik-net:
     name: traefik-net
-secrets:
-  groovify-frontend-env:
-    file: frontend/.env

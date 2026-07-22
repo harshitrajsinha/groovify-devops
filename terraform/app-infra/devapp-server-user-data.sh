@@ -35,7 +35,7 @@ chmod 600 "$FRONTEND_ENV_FILE"
 
 CONFIG_FILE="${PROJECT_DIR}/frontend/config.js"
 
-for name in VITE_COGNITO_CLIENT_ID; do
+for name in VITE_BACKEND_URL VITE_MODE VITE_COGNITO_DOMAIN VITE_COGNITO_CLIENT_ID; do
     value=$(aws ssm get-parameter \
         --name "/groovify/$name" \
         --with-decryption \
