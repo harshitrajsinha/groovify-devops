@@ -168,4 +168,4 @@ This was the easiest among the three migrations as it involved only changing the
 
 <hr>
 
-* Full write is available on Medium: (https://medium.com/@_rajSinha08/groovify-devops-project-47d9d840873b)[https://medium.com/@_rajSinha08/groovify-devops-project-47d9d840873b]
+* Full write is available on Medium: [https://medium.com/@_rajSinha08/groovify-devops-project-47d9d840873b](https://medium.com/@_rajSinha08/groovify-devops-project-47d9d840873b)
