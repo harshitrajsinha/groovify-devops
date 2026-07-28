@@ -83,7 +83,6 @@ VITE_MODE=development
 VITE_COGNITO_DOMAIN=
 VITE_COGNITO_CLIENT_ID=
 ```
-<<<<<<< HEAD
 * Update frontend/nginx.conf
 ```bash
 # Make sure nginx.conf contains backend url as
@@ -170,45 +169,3 @@ This was the easiest among the three migrations as it involved only changing the
 <hr>
 
 * Full write is available on Medium: [https://medium.com/@_rajSinha08/groovify-devops-project-47d9d840873b](https://medium.com/@_rajSinha08/groovify-devops-project-47d9d840873b)
-=======
-
-Replace the placeholder values with your actual credentials.
-
-**Running the frontend Project**
-
-```bash
-cd spotify-clone-devops/frontend
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to test.
-
-### Running application via Docker
-
-* Create a .env file at the root directory combining env vars of backend and frontend (so that same could be used in both or create separate)
-
-**Building and running backend docker image**
-
-```bash
-cd spotify-clone-devops
-docker build -t <image-name>:<version> -f docker/Dockerfile.backend .
-docker run -p 8000:8000 --env-file ./.env <image-name>:<version>
-```
-
-**Building and running frontend docker image**
-
-```bash
-cd spotify-clone-devops
-# change backend url in frontend/nginx.conf as per your configuration
-docker build --secret id=spotify-frontend-env,src=.env -t <image-name>:<version> -f docker/Dockerfile.frontend . # assuming .env is located in root directory with name .env
-docker run -p 80:80 <image-name>:<version> # Frontend docker container is exposed on port 80 (as we are using nginx as proxy server)
-```
-<<<<<<< HEAD
->>>>>>> f7fe5e9 (readme update)
-=======
-
-Problem with docker compose
-
-1. Could not scale on fixed port. Such as scaling backend would give error - "port is already allocated" by backend 1 on 8000. Sol - Make internal-only port
-2. Internal-only port resolves the allocated port issue by assigning random port on host => frontend and backend are no longer being served on desired ports - 80 and 8000 respectively. Sol - reverse proxy - traefik
->>>>>>> babf4be (updating docker compose)
