@@ -236,7 +236,7 @@ resource "aws_instance" "groovify_bastion" {
   user_data_base64            = base64encode(file("./bastion-user-data.sh"))
   vpc_security_group_ids      = [aws_security_group.bastion_host_sg.id]
   tags = {
-    Name = "${var.project_tag}-instance"
+    Name      = "${var.project_tag}-instance"
     Project   = var.project_tag
     Terraform = "true"
   }

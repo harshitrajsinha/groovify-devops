@@ -72,3 +72,4 @@ dist-ssr
 .env
 node_modules
 tmp/
+.terraform*
