@@ -3,7 +3,7 @@
 variable "db_password" {
   type      = string
   sensitive = true
-  default   = "MySuperSecretPassword123!"
+  default   = "MySuperSecretPassword1234!"
 }
 
 resource "aws_db_instance" "example" {
@@ -11,7 +11,7 @@ resource "aws_db_instance" "example" {
 
   engine   = "postgres"
   username = "admin"
-  password = "MySuperSecretPassword123!"
+  password = "MySuperSecretPassword1234!"
 
   instance_class = "db.t3.micro"
 }
