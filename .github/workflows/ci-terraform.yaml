@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - dev
     paths:
       - 'terraform/**'
       - '.github/workflows/**' # to be removed in production
