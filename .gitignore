@@ -73,3 +73,6 @@ dist-ssr
 node_modules
 tmp/
 .terraform*
+
+
+.secrets
