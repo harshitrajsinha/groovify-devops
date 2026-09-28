@@ -8,6 +8,8 @@ const SignInOAuthButtons = () => {
       `${window.location.origin}/auth-callback`
     );
 
+    // user is redirected to this url when button is clicked. This url is the AWS Cognito hosted login page for Google OAuth.
+    // `/auth-callback` is the route where the user will be redirected after successful login. This route is handled in App.tsx and AuthCallbackPage.tsx.
     const authUrl =
       `${domain}/oauth2/authorize` +
       `?identity_provider=Google` +
@@ -16,10 +18,12 @@ const SignInOAuthButtons = () => {
       `&redirect_uri=${redirectUri}` +
       `&scope=openid+email+profile`;
 
+      // Makes the button click redirect to the AWS Cognito hosted login page for Google OAuth.
       window.location.href = authUrl;
   };
 
   return (
+    // Button is rendered for "SignInOAuthButtons" component in Topbar.tsx
     <Button
       onClick={signInWithGoogle}
       variant="secondary"

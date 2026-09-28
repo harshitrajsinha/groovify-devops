@@ -30,34 +30,38 @@ export const useAuthStore = create<AuthStore>((set) => ({
 			set({ isLoading: false });
 		}
 	},
-
+  
+  // We directly check for admin status and decide the authentication state as well
+  // because as of now the current flow only has admin users that can log in. 
+  // So if the user is an admin, we can say that the user is authenticated as well or vice versa.
 	initializeAuth: async () => {
-  set({
-    isLoading: true,
-    error: null,
-  });
+    set({
+      isLoading: true,
+      error: null,
+    });
 
-  try {
-    const response =
-      await axiosInstance.get(
-        "/admin/check"
-      );
+    try {
+      const response =
+        await axiosInstance.get(
+          "/admin/check"
+        );
 
-    set({
-      isAuthenticated: true,
-      isAdmin: response.data.admin,
-    });
-  } catch {
-    set({
-      isAuthenticated: false,
-      isAdmin: false,
-    });
-  } finally {
-    set({
-      isLoading: false,
-    });
-  }
-},
+      set({
+        isAuthenticated: true,
+        isAdmin: response.data.admin, // it will always be true. 
+      });
+    } catch {
+      set({
+        // If the user's data does not exist in AWS Cognito or user does not have cookie saved, this section will be executed.
+        isAuthenticated: false,
+        isAdmin: false,
+      });
+    } finally {
+      set({
+        isLoading: false,
+      });
+    }
+  },
 
 	logout: async () => {
     try {

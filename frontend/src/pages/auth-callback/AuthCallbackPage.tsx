@@ -10,6 +10,9 @@ const AuthCallbackPage = () => {
   const callbackAttempted = useRef(false);
   const { checkAdminStatus } = useAuthStore();
 
+  //This effect then calls processCallback() immediately. 
+  // That function reads the OAuth code from the URL, sends it to the backend, checks the user, and navigates to /. 
+  // If there’s no code or an error occurs, it navigates to /login.
   useEffect(() => {
     const processCallback = async () => {
       if (callbackAttempted.current) return;
@@ -27,16 +30,25 @@ const AuthCallbackPage = () => {
       }
 
       try {
+        // making backend API call to pass code
         await axiosInstance.post("/auth/callback", {
           code,
         });
 
+        // making backend API call to get user data and check if the user is an admin or not.
         await axiosInstance.get(
           "/auth/me",
           {
-            withCredentials: true,
+            withCredentials: true, // This is important to include cookies in the request
           }
         );
+        
+
+        // `/auth/me` retrieves "isAdmin" from backend 
+        // but its value is discarded and rather we call checkAdminStatus(), 
+        // which calls `/admin/check` to update the Zustand store with the admin status.
+        // WHY???
+
 
         await checkAdminStatus();
 

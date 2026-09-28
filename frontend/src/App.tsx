@@ -14,6 +14,9 @@ import NotFoundPage from "./pages/404/NotFoundPage";
 
 function App() {
 
+	// This code snippet calls the initializeAuth function, 
+	// which is responsible for logging back the admin, without sign in, 
+	// when the app is closed and reopened (along with cookies).
 	const initializeAuth = useAuthStore((state) =>state.initializeAuth);
 	useEffect(() => {
     	initializeAuth();

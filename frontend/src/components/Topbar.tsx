@@ -8,6 +8,9 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
 
 const Topbar = () => {
+
+	// this code line initialize the 3 values 
+	// from the value it got when initializeAuth function was called in App.tsx.
 	const { isAdmin, isAuthenticated, isLoading } = useAuthStore();
 	if (isLoading) {
 		return null; // or spinner
