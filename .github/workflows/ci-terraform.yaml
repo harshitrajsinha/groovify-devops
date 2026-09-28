@@ -1,9 +1,10 @@
 name: CI pipeline - terraform, to run security scan, formatting and validation of terraform resource code
 
 on:
-  push: # must be changed to "pull_request" in production
+  pull_request:
     branches:
       - main
+      - dev
     paths:
       - 'terraform/**'
       - '.github/workflows/**' # to be removed in production
@@ -15,7 +16,7 @@ jobs:
 
     permissions:
       contents: read
-      security-events: write  # Required to Trivy upload SARIF files to Security tab
+      security-events: write  # Required to Trivy upload SARIF files to GitHub Security tab
 
     defaults:
       run:
@@ -25,15 +26,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6.0.2
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # To allow Gitleaks to scan entire Git history for any leaks
 
       # Secret Scan
       - name: Secret scan
-        uses: gitleaks/gitleaks-action@v2.3.9
+        uses: gitleaks/gitleaks-action@v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_NOTIFY_USER_LIST: '@harshitrajsinha'
-        continue-on-error: true
 
       # Install Terraform
       - name: Setup Terraform

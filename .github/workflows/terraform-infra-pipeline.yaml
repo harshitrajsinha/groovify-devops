@@ -1,0 +1,110 @@
+name: 'Terraform Infrastructure Pipeline'
+
+on:
+  workflow_dispatch:
+    inputs:
+      # environment:   # For tfvars file based on environment
+      #   description: Terraform Environment
+      #   required: true
+      #   default: dev
+      #   type: string
+      my_ip_cidr:
+        description: "My IP CIDR allowed to SSH"
+        required: true
+        default: "0.0.0.0/32"
+      terraform_action:
+        description: 'Terraform Action'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+
+env:
+  AWS_REGION: us-east-1
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+  GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+  SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+
+
+permissions:
+  contents: read
+
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: terraform
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: get caller identity 1
+        run: |
+          aws sts get-caller-identity
+      
+      - name: Create directory to store tfplan files
+        run: mkdir -p plans
+        working-directory: terraform
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.15.7
+
+      - name: Terraform Init  # Initialize terrafrom
+        run: terraform init
+      
+      - name: Terraform Format # Format terraform code
+        run: terraform fmt -check -diff
+
+      - name: Terraform Validate # Validate terraform code
+        run: terraform validate
+
+      - name: Terraform Plan # terraform plan can be supplied with -var-file="${{ github.event.inputs.environment }}.tfvars"
+        if: github.event.inputs.terraform_action == 'plan'
+        run: |
+          terraform plan \
+            -var="my_ip_cidr=${{ github.event.inputs.my_ip_cidr }}" \
+            -var="google_client_id=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}" \
+            -var="google_client_secret=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}" \
+            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
+            -input=false \
+            -out=plans/tfplan
+  
+      - name: Terraform Apply
+        if: github.event.inputs.terraform_action == 'apply'
+        run: |
+          terraform apply \
+            -var="my_ip_cidr=${{ github.event.inputs.my_ip_cidr }}" \
+            -var="google_client_id=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}" \
+            -var="google_client_secret=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}" \
+            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
+            -auto-approve plans/tfplan \
+            -input=false
+
+      - name: Terraform Destroy
+        if: github.event.inputs.terraform_action == 'destroy'
+        run: |
+          terraform -chdir=eks destroy \
+            -var="my_ip_cidr=${{ github.event.inputs.my_ip_cidr }}" \
+            -var="google_client_id=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}" \
+            -var="google_client_secret=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}" \
+            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
+            -auto-approve plans/tfplan \
+            -input=false

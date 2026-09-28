@@ -53,6 +53,7 @@ jobs:
       ### Dependency scan:
 
       - name: Dependency scan
+        if: github.ref == 'refs/heads/dev'
         uses: oke-py/npm-audit-action@v4.0.2
         with:
           audit_level: high

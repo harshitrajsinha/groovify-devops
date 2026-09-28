@@ -43,6 +43,7 @@ services:
       - traefik-net
     labels:
       - "traefik.enable=true" # Enabling will allow exposing "this" container to traefik
+      #- "traefik.http.routers.backend.rule=Host(`localhost`) && PathPrefix(`/api`)"     ---> Enable this in EC2 as inside instance, it will run on localhost
       - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
       - "traefik.http.services.backend.loadbalancer.server.port=8000"
       - "traefik.http.routers.backend.priority=10"
