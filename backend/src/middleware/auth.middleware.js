@@ -40,6 +40,11 @@ export const protectRoute = async (req, res, next) => {
 
 export const requireAdmin = async (req, res, next) => {
 	try {
+
+		// Note that req.user.email may not be coming from request body 
+		// but rather "protectRoute" verifies the JWT token and attaches the user payload to req.user, 
+		// which includes the email.
+		
 		if (
 			req.user.email !==
 			process.env.ADMIN_EMAIL

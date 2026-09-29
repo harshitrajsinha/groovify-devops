@@ -30,25 +30,34 @@ const AuthCallbackPage = () => {
       }
 
       try {
+
         // making backend API call to pass code
+        // this call makes backend exchange code for access token from Cognito
+        // and return user information like userid and email (which is not stored. WHY ???)
+        // and cookie header. This cookie is stored directly by the browser when it receives the response
+        // No frontend code required.
+
         await axiosInstance.post("/auth/callback", {
           code,
         });
 
         // making backend API call to get user data and check if the user is an admin or not.
-        await axiosInstance.get(
-          "/auth/me",
-          {
-            withCredentials: true, // This is important to include cookies in the request
-          }
-        );
-        
 
         // `/auth/me` retrieves "isAdmin" from backend 
         // but its value is discarded and rather we call checkAdminStatus(), 
         // which calls `/admin/check` to update the Zustand store with the admin status.
-        // WHY???
+        // WHY??? SHOULD BE REMOVED.
 
+        await axiosInstance.get(
+          "/auth/me",
+          {
+            // This is explicitly include cookies in the request as frontend and backend are on different domains. 
+            // If backend and frontend were on the same domain, this would not be necessary.
+            withCredentials: true,
+          }
+        );
+
+        // This call updates the Zustand store with the admin status of the user.
 
         await checkAdminStatus();
 
